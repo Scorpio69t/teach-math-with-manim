@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:E:/用Manim讲好数学/code/examples/ch01_why_manim/media/videos/opening/1080p60/partial_movie_files/OpeningScene/2257293077_1764411580_223132457.mp4'
+file 'file:E:/用Manim讲好数学/code/examples/ch01_why_manim/media/videos/opening/1080p60/partial_movie_files/OpeningScene/2135761390_4285459792_32612254.mp4'
+file 'file:E:/用Manim讲好数学/code/examples/ch01_why_manim/media/videos/opening/1080p60/partial_movie_files/OpeningScene/2135761390_1812671672_967203146.mp4'
+file 'file:E:/用Manim讲好数学/code/examples/ch01_why_manim/media/videos/opening/1080p60/partial_movie_files/OpeningScene/2135761390_2844360058_2463057622.mp4'
