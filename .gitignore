@@ -1,0 +1,16 @@
+# Manim 渲染输出（体积大且可再生，不入库；成片请放到 videos/）
+media/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.log
+tmp/
