@@ -7,6 +7,10 @@
 - 颜色语义：金=正在比较，红=发生交换，绿=已就位，暗蓝灰=未参与；
 - 指针系统：j / j+1 金色箭头全程在场，移动本身就是叙事；
 - 节奏控制：每个节拍都等得起一句讲解；底部字幕同步给出讲解词。
+
+节奏调节：改下面这个数即可（所有关键节拍和字幕停留时间都会按比例缩放）
+    PACE = 1.0  标准节奏（约 45 秒）
+    PACE = 1.3  舒缓节奏，适合首次观看的读者/评审（约 60 秒）
 """
 
 from manim import *
@@ -16,6 +20,9 @@ FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans
 
 class BubbleSortScene(Scene):
     """冒泡排序完整教学动画：片头 → 建数组 → 逐轮比较交换 → 收尾点题。"""
+
+    # ---- 节奏系数：字幕看不完就调大它（推荐先试 1.3） ----
+    PACE = 1.3
 
     # ---- 颜色语义表：全书统一，不要随意更改 ----
     C_DEFAULT = "#1C2541"   # 未参与（暗蓝灰）
@@ -27,6 +34,7 @@ class BubbleSortScene(Scene):
     C_MUTED = "#9AA3C0"     # 次要文字
 
     def construct(self):
+        pace = self.PACE
         values = [5, 7, 3, 8, 2]
         n = len(values)
 
@@ -38,7 +46,7 @@ class BubbleSortScene(Scene):
         title_card = VGroup(title, subtitle)
         self.play(Write(title), run_time=1.2)
         self.play(FadeIn(subtitle, shift=UP * 0.3), run_time=0.8)
-        self.wait(1.2)
+        self.wait(1.5 * pace)
         self.play(title_card.animate.scale(0.55).to_edge(UP, buff=0.35),
                   run_time=0.8)
 
@@ -78,7 +86,7 @@ class BubbleSortScene(Scene):
             """生成字幕变换动画（Transform 原地变形，不闪烁）。"""
             new = Text(msg, font=FONT, font_size=30,
                        color=color or self.C_TEXT).move_to(CAPTION_POS)
-            return Transform(caption, new, run_time=0.3)
+            return Transform(caption, new, run_time=0.3 * pace)
 
         # ========== 指针：j 与 j+1 ==========
         ptr_j = self.make_pointer("j")
@@ -87,7 +95,7 @@ class BubbleSortScene(Scene):
         ptr_j1.next_to(cells[1], DOWN, buff=0.15)
         self.play(FadeIn(caption), FadeIn(ptr_j), FadeIn(ptr_j1),
                   run_time=0.8)
-        self.wait(0.6)
+        self.wait(1.0 * pace)   # 开场字幕阅读时间
 
         # ========== 冒泡主过程 ==========
         cmp_cnt, swap_cnt = 0, 0
@@ -101,18 +109,19 @@ class BubbleSortScene(Scene):
             for j in range(n - 1 - i):
                 a, b = values[j], values[j + 1]
 
-                # 1. 指针就位 + 字幕预告
+                # 1. 指针就位 + 字幕预告（之后留阅读时间）
                 self.play(
                     ptr_j.animate.next_to(cells[j], DOWN, buff=0.15),
                     ptr_j1.animate.next_to(cells[j + 1], DOWN, buff=0.15),
                     set_caption(f"比较 {a} 和 {b}"),
-                    run_time=0.4,
+                    run_time=0.4 * pace,
                 )
+                self.wait(0.4 * pace)   # 读字幕
                 # 2. 比较高亮（金色）
                 self.play(
                     cells[j][0].animate.set_fill(self.C_COMPARE, 0.7),
                     cells[j + 1][0].animate.set_fill(self.C_COMPARE, 0.7),
-                    run_time=0.4,
+                    run_time=0.5 * pace,
                 )
                 cmp_cnt += 1
                 cmp_counter.become(
@@ -126,11 +135,12 @@ class BubbleSortScene(Scene):
                         set_caption(f"{a} > {b}，交换！", self.C_SWAP),
                         cells[j][0].animate.set_fill(self.C_SWAP, 0.8),
                         cells[j + 1][0].animate.set_fill(self.C_SWAP, 0.8),
-                        run_time=0.3,
+                        run_time=0.3 * pace,
                     )
+                    self.wait(0.4 * pace)   # 读字幕：判断结论
                     # CyclicReplace：沿弧线互换，轨迹本身就在说"交换"
                     self.play(CyclicReplace(cells[j], cells[j + 1]),
-                              run_time=0.7)
+                              run_time=0.8 * pace)
                     cells[j], cells[j + 1] = cells[j + 1], cells[j]
                     swap_cnt += 1
                     swap_counter.become(
@@ -139,8 +149,8 @@ class BubbleSortScene(Scene):
                 else:
                     self.play(set_caption(f"{a} ≤ {b}，保持不动",
                                           self.C_MUTED),
-                              run_time=0.3)
-                    self.wait(0.2)
+                              run_time=0.3 * pace)
+                    self.wait(0.5 * pace)   # 读字幕：不交换的结论
 
                 # 4. 恢复默认色
                 self.play(
@@ -155,11 +165,11 @@ class BubbleSortScene(Scene):
                 settled[0].animate.set_fill(self.C_SORTED, 0.6),
                 set_caption(f"第 {i + 1} 轮结束：{values[n - 1 - i]} 就位",
                             self.C_SORTED),
-                run_time=0.4,
+                run_time=0.4 * pace,
             )
             self.play(Indicate(settled, color=self.C_SORTED,
-                               scale_factor=1.15), run_time=0.5)
-            self.wait(0.6)
+                               scale_factor=1.15), run_time=0.5 * pace)
+            self.wait(0.8 * pace)   # 读字幕：本轮小结
 
         # ========== 收尾点题 ==========
         self.play(cells[0][0].animate.set_fill(self.C_SORTED, 0.6),
@@ -167,10 +177,10 @@ class BubbleSortScene(Scene):
         self.play(FadeOut(ptr_j), FadeOut(ptr_j1), run_time=0.4)
         self.play(LaggedStart(
             *[Indicate(c, color=self.C_SORTED, scale_factor=1.12)
-              for c in cells], lag_ratio=0.12), run_time=1.2)
+              for c in cells], lag_ratio=0.12), run_time=1.2 * pace)
         self.play(set_caption("排序完成：每一轮，最大的泡泡都冒到了它该在的位置",
                               self.C_SORTED), run_time=0.5)
-        self.wait(2.5)
+        self.wait(3.0 * pace)   # 金句停留，适合截图当封面帧
 
     @staticmethod
     def make_pointer(label):
