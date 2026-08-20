@@ -69,13 +69,15 @@ class BubbleSortScene(Scene):
         counters.to_corner(UR, buff=0.6).shift(DOWN * 0.7)
         self.play(FadeIn(round_banner), FadeIn(counters), run_time=0.6)
 
-        caption = Text(" ", font=FONT, font_size=30, color=self.C_TEXT)
-        caption.to_edge(DOWN, buff=0.7)
+        CAPTION_POS = DOWN * 3.2   # 字幕固定锚点：画面底部，远离方块与指针
+        caption = Text("相邻的两个元素比较大小，大的往后沉",
+                       font=FONT, font_size=30, color=self.C_TEXT)
+        caption.move_to(CAPTION_POS)
 
         def set_caption(msg, color=None):
             """生成字幕变换动画（Transform 原地变形，不闪烁）。"""
             new = Text(msg, font=FONT, font_size=30,
-                       color=color or self.C_TEXT).move_to(caption)
+                       color=color or self.C_TEXT).move_to(CAPTION_POS)
             return Transform(caption, new, run_time=0.3)
 
         # ========== 指针：j 与 j+1 ==========
@@ -83,8 +85,8 @@ class BubbleSortScene(Scene):
         ptr_j1 = self.make_pointer("j+1")
         ptr_j.next_to(cells[0], DOWN, buff=0.15)
         ptr_j1.next_to(cells[1], DOWN, buff=0.15)
-        self.play(set_caption("相邻的两个元素比较大小，大的往后沉"),
-                  FadeIn(ptr_j), FadeIn(ptr_j1), run_time=0.8)
+        self.play(FadeIn(caption), FadeIn(ptr_j), FadeIn(ptr_j1),
+                  run_time=0.8)
         self.wait(0.6)
 
         # ========== 冒泡主过程 ==========
