@@ -8,16 +8,12 @@
     ../.venv-manim/Scripts/python.exe -m manim -qh examples/ch01_why_manim/fig1_4_video.py Fig14Video
 
 时间轴（供抽帧参考）：
-    0.0–1.0   Create 坐标轴
-    1.0–2.5   Create 单位圆
-    2.5–3.5   GrowArrow 向量 + 标签 1
-    3.5–6.5   Rotate π + 圆弧同步生长
-    6.5–7.3   π 标签
-    7.3–8.1   落点 -1
-    8.1–9.3   Write e^{iπ} = -1
-    9.3–10.5  变形为 e^{iπ} + 1 = 0
-    10.5–12.5 wait
-抽帧建议：3.4s（单位圆与向量就位）/ 5.0s（旋转中途，向量指向上方）/ 11.5s（终帧）
+    0.0–1.5  Create 三角形
+    1.5–2.5  三个内角标记 + 顶点字母
+    2.5–5.0  三个角搬到下方顶点（LaggedStart）
+    5.0–6.5  半圆 + 公式
+    6.5–8.5  wait
+抽帧建议：2.4s（三角标记就位）/ 3.8s（拼合中途）/ 7.5s（终帧）
 """
 
 from pathlib import Path
@@ -35,44 +31,44 @@ def math_img(name: str, height: float) -> ImageMobject:
 
 
 class Fig14Video(Scene):
-    """与 OpeningScene 同节奏：单位圆 → 旋转 π → 欧拉公式。"""
+    """与 OpeningScene 同节奏：撕角拼平角 → 内角和 180°。"""
 
     def construct(self):
-        axes = Axes(
-            x_range=[-2.5, 2.5, 1],
-            y_range=[-2.5, 2.5, 1],
-            x_length=6,
-            y_length=6,
-            axis_config={"color": BLUE_E, "stroke_width": 2},
-            tips=False,
-        )
-        circle = Circle(radius=2, color=BLUE)
-        self.play(Create(axes), run_time=1.0)
-        self.play(Create(circle), run_time=1.5)
+        A, B, C = LEFT * 2.4 + DOWN * 0.4, RIGHT * 2.4 + DOWN * 0.4, RIGHT * 0.6 + UP * 2.4
+        tri = Polygon(A, B, C, color=BLUE, stroke_width=4)
+        self.play(Create(tri), run_time=1.5)
 
-        vector = Arrow(ORIGIN, RIGHT * 2, buff=0, color=WHITE)
-        one_label = math_img("one.png", 0.4).next_to(RIGHT * 2, DR, buff=0.15)
-        self.play(GrowArrow(vector), FadeIn(one_label), run_time=1.0)
-
-        arc = Arc(radius=0.9, start_angle=0, angle=PI, color=GOLD, stroke_width=6)
+        verts = [A, B, C]
+        label_files = ["label_a.png", "label_b.png", "label_c.png"]
+        colors = [RED, GOLD, GREEN]
+        marks, labels = [], []
+        for i, (v, f, c) in enumerate(zip(verts, label_files, colors)):
+            side1 = Line(v, verts[(i + 1) % 3])
+            side2 = Line(v, verts[(i - 1) % 3])
+            marks.append(Angle(side1, side2, radius=0.55, color=c, stroke_width=6))
+            labels.append(math_img(f, 0.42).move_to(
+                v + normalize(v - tri.get_center()) * 0.45))
         self.play(
-            Rotate(vector, PI, about_point=ORIGIN, rate_func=linear),
-            Create(arc, rate_func=linear),
-            run_time=3,
+            *[FadeIn(m) for m in marks],
+            *[FadeIn(l) for l in labels],
+            run_time=1.0,
         )
-        pi_label = math_img("pi_gold.png", 0.45).move_to(UP * 1.25 + LEFT * 0.35)
-        self.play(FadeIn(pi_label), run_time=0.8)
 
-        landing = Dot(LEFT * 2, color=GOLD, radius=0.1)
-        minus_one_label = math_img("minus_one.png", 0.4).next_to(LEFT * 2, DL, buff=0.15)
-        self.play(FadeIn(landing, scale=1.5), FadeIn(minus_one_label), run_time=0.8)
+        center = DOWN * 2.4
+        start = 0.0
+        moves = []
+        for m, c in zip(marks, colors):
+            target = Arc(radius=1.1, start_angle=start, angle=m.get_value(),
+                         arc_center=center, color=c, stroke_width=6)
+            moves.append(Transform(m.copy(), target))
+            start += m.get_value()
+        self.play(LaggedStart(*moves, lag_ratio=0.3), run_time=2.5)
 
-        step1 = math_img("eq_neg1.png", 0.6)
-        step1.to_edge(DOWN, buff=1.0)
-        self.play(FadeIn(step1, shift=UP * 0.2), run_time=1.2)  # 书中为 Write(MathTex)
-        step2 = math_img("identity.png", 0.6)
-        step2.move_to(step1)
-        # 书中为 TransformMatchingTex；图片无法插值，用交叉淡入淡出模拟
-        self.play(FadeOut(step1, shift=UP * 0.1), FadeIn(step2, shift=UP * 0.1), run_time=1.2)
+        half = Arc(radius=1.5, start_angle=0, angle=PI,
+                   arc_center=center, color=WHITE, stroke_width=3)
+        formula = math_img("angle_sum.png", 0.62)
+        formula.next_to(center, DOWN, buff=0.5)
+        # 书中为 Create(half) + Write(MathTex)；图片用 FadeIn 模拟 Write
+        self.play(Create(half), FadeIn(formula, shift=UP * 0.2), run_time=1.5)
 
         self.wait(2)

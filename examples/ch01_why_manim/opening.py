@@ -2,57 +2,56 @@
 
 渲染：manim -pqh opening.py OpeningScene
 
-叙事：复平面上的单位圆 → 半径向量从 1 逆时针旋转 π → 落在 -1 →
-e^{iπ} = -1 移项得到 e^{iπ} + 1 = 0。
-几何直觉参考：e^{iπ} 即"沿单位圆走半个圆弧"，落点正是 (-1, 0)。
+叙事：任意三角形 → 三个内角上色标记 → 把三个角"撕下来"搬到
+同一个顶点上 → 正好拼成一个平角 → ∠A + ∠B + ∠C = 180°。
+公式成立的理由就是画面本身：三块角拼起来恰好是半圆。
 """
 
 from manim import *
 
 
 class OpeningScene(Scene):
-    """课堂开场：让欧拉公式"看得见"，节奏舒缓。"""
+    """课堂开场：三角形内角和，"撕角拼平角"，节奏舒缓。"""
 
     def construct(self):
-        # 1. 复平面登场：坐标轴退作背景，单位圆才是主角
-        axes = Axes(
-            x_range=[-2.5, 2.5, 1],
-            y_range=[-2.5, 2.5, 1],
-            x_length=6,
-            y_length=6,
-            axis_config={"color": BLUE_E, "stroke_width": 2},
-            tips=False,
-        )
-        circle = Circle(radius=2, color=BLUE)
-        self.play(Create(axes), run_time=1.0)
-        self.play(Create(circle), run_time=1.5)
+        # 1. 一个任意三角形登场（不画坐标轴，主角只有它）
+        A, B, C = LEFT * 2.4 + DOWN * 0.4, RIGHT * 2.4 + DOWN * 0.4, RIGHT * 0.6 + UP * 2.4
+        tri = Polygon(A, B, C, color=BLUE, stroke_width=4)
+        self.play(Create(tri), run_time=1.5)
 
-        # 2. 半径向量站在 1 上，准备出发
-        vector = Arrow(ORIGIN, RIGHT * 2, buff=0, color=WHITE)
-        one_label = MathTex("1").next_to(RIGHT * 2, DR, buff=0.15)
-        self.play(GrowArrow(vector), FadeIn(one_label), run_time=1.0)
-
-        # 3. 逆时针旋转 π：金色圆弧与向量同步生长，"走过的角度"看得见
-        arc = Arc(radius=0.9, start_angle=0, angle=PI, color=GOLD, stroke_width=6)
+        # 2. 给三个内角上色标记：红 A、金 B、绿 C，顶点字母同色
+        verts = [A, B, C]
+        names = ["A", "B", "C"]
+        colors = [RED, GOLD, GREEN]
+        marks, labels = [], []
+        for i, (v, name, c) in enumerate(zip(verts, names, colors)):
+            side1 = Line(v, verts[(i + 1) % 3])
+            side2 = Line(v, verts[(i - 1) % 3])
+            marks.append(Angle(side1, side2, radius=0.55, color=c, stroke_width=6))
+            labels.append(MathTex(name, color=c).move_to(
+                v + normalize(v - tri.get_center()) * 0.45))
         self.play(
-            Rotate(vector, PI, about_point=ORIGIN, rate_func=linear),
-            Create(arc, rate_func=linear),  # 与旋转同步，弧长=角度
-            run_time=3,
+            *[FadeIn(m) for m in marks],
+            *[FadeIn(l) for l in labels],
+            run_time=1.0,
         )
-        pi_label = MathTex(r"\pi", color=GOLD).move_to(UP * 1.25 + LEFT * 0.35)
-        self.play(FadeIn(pi_label), run_time=0.8)
 
-        # 4. 落点正是 -1：这就是 e^{iπ} = -1 的几何含义
-        landing = Dot(LEFT * 2, color=GOLD, radius=0.1)
-        minus_one_label = MathTex("-1").next_to(LEFT * 2, DL, buff=0.15)
-        self.play(FadeIn(landing, scale=1.5), FadeIn(minus_one_label), run_time=0.8)
+        # 3. 把三个角"搬"到下方同一个顶点上：弧弧相接，正好拼成半圆
+        center = DOWN * 2.4
+        start = 0.0
+        moves = []
+        for m, c in zip(marks, colors):
+            target = Arc(radius=1.1, start_angle=start, angle=m.get_value(),
+                         arc_center=center, color=c, stroke_width=6)
+            moves.append(Transform(m.copy(), target))  # 复制一份搬走，原角留在三角形上
+            start += m.get_value()
+        self.play(LaggedStart(*moves, lag_ratio=0.3), run_time=2.5)
 
-        # 5. 公式现身：先给 e^{iπ} = -1，再移项成欧拉恒等式
-        step1 = MathTex(r"e^{i\pi}", "=", "-1").scale(1.2)
-        step1.to_edge(DOWN, buff=1.0)
-        self.play(Write(step1), run_time=1.2)
-        step2 = MathTex(r"e^{i\pi}", "+", "1", "=", "0").scale(1.2)
-        step2.move_to(step1)
-        self.play(TransformMatchingTex(step1, step2), run_time=1.2)  # 第 5 章详解
+        # 4. 三块拼满半圆——半圆就是平角，就是 180°
+        half = Arc(radius=1.5, start_angle=0, angle=PI,
+                   arc_center=center, color=WHITE, stroke_width=3)
+        formula = MathTex(r"\angle A + \angle B + \angle C = 180^\circ").scale(1.1)
+        formula.next_to(center, DOWN, buff=0.5)
+        self.play(Create(half), Write(formula), run_time=1.5)
 
-        self.wait(2)  # 停顿留给讲解："这就是最美的公式"
+        self.wait(2)  # 停顿留给讲解："所以，内角和是 180°"
