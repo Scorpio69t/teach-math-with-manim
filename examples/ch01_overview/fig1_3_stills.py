@@ -3,12 +3,14 @@
 渲染（静止帧，1080p）：
   manim -sqh fig1_3_stills.py QuadraticSlideStill
   manim -sqh fig1_3_stills.py SineWaveFromCircleStill
-  manim -sqh fig1_3_stills.py BubbleSortStill
+  manim -sqh fig1_3_stills.py EulerIdentityStill
   manim -sqh fig1_3_stills.py GaltonBoardStill
 
 版式遵循第 4 章标准帧：左上标题 + 金色短尺、底部固定注释条。
 颜色语义：金=当前关注，红=变化/运动，绿=就位/结论，蓝灰=背景。
 """
+
+from pathlib import Path
 
 from manim import *
 import numpy as np
@@ -114,49 +116,48 @@ class SineWaveFromCircleStill(Scene):
         self.wait(0.1)
 
 
-class BubbleSortStill(Scene):
-    """第 15 章：冒泡排序中间帧——金色比较中，绿色已就位。"""
-
-    VALUES = [3, 1, 5, 2, 4, 6, 7, 8]
-    COMPARING = (1, 2)   # 正在比较的下标
-    SORTED_FROM = 5      # 从此下标起已就位
+class EulerIdentityStill(Scene):
+    """第 15 章：欧拉公式——从 1 沿单位圆转半圈，落点恰好是 -1。"""
 
     def construct(self):
-        add_frame_chrome(self, "第 15 章｜冒泡排序：相邻比较，大数沉底",
-                         "每一轮两两比较，最大的元素向右「沉底」就位")
+        add_frame_chrome(self, "第 15 章｜欧拉公式：沿单位圆走半圈",
+                         "从 1 出发转过半圈，落点恰好是 -1——这就是等式成立的理由")
 
-        n = len(self.VALUES)
-        base_y, unit_h, bar_w, gap = -2.1, 0.42, 0.72, 0.28
-        total_w = n * bar_w + (n - 1) * gap
-        x0 = -total_w / 2 + bar_w / 2
+        center = np.array([-2.1, -0.15, 0])
+        R = 1.9
 
-        bars = VGroup()
-        for i, v in enumerate(self.VALUES):
-            if i >= self.SORTED_FROM:
-                color = GREEN        # 就位
-            elif i in self.COMPARING:
-                color = GOLD         # 正在比较
-            else:
-                color = C_MUTED      # 待处理
-            bar = Rectangle(width=bar_w, height=v * unit_h,
-                            fill_color=color, fill_opacity=0.85,
-                            stroke_color=color, stroke_width=2)
-            bar.move_to([x0 + i * (bar_w + gap), base_y + v * unit_h / 2, 0])
-            label = Text(str(v), font=FONT, font_size=22, color=color)
-            label.next_to(bar, UP, buff=0.12)
-            bars.add(VGroup(bar, label))
+        # 十字参考线（蓝灰，无刻度——刻度是这张图的噪声）
+        cross = VGroup(
+            Line(center + LEFT * (R + 0.7), center + RIGHT * (R + 0.7)),
+            Line(center + DOWN * (R + 0.7), center + UP * (R + 0.7)),
+        )
+        cross.set_stroke(C_MUTED, width=2)
 
-        # 比较对上方的弧线箭头：交换意图的视觉预告
-        # 两端对齐到同一高度，弧线对称，读者一眼看出"这是一对"
-        top_y = max(bars[self.COMPARING[0]][0].get_top()[1],
-                    bars[self.COMPARING[1]][0].get_top()[1]) + 0.6
-        p_left = [bars[self.COMPARING[0]][0].get_center()[0], top_y, 0]
-        p_right = [bars[self.COMPARING[1]][0].get_center()[0], top_y, 0]
-        swap_arc = CurvedArrow(p_left, p_right, angle=TAU / 6,
-                               color=GOLD, stroke_width=3,
-                               tip_length=0.22)
+        circle = Circle(radius=R, color=C_MUTED, stroke_width=3)
+        circle.move_to(center)
 
-        self.add(bars, swap_arc)
+        # 已转完的半圆金弧 + 指向 -1 的向量（终帧姿态）
+        arc = Arc(radius=0.85, start_angle=0, angle=PI,
+                  arc_center=center, color=GOLD, stroke_width=6)
+        vector = Arrow(center, center + LEFT * R, buff=0,
+                       color=WHITE, stroke_width=5)
+        landing = Dot(center + LEFT * R, radius=0.1, color=GOLD)
+
+        pi_label = Text("π", font=FONT, font_size=30, color=GOLD)
+        pi_label.move_to(center + np.array([0.1, 1.15, 0]))
+        one_label = Text("1", font=FONT, font_size=26, color=C_TEXT)
+        one_label.next_to(center + RIGHT * R, DR, buff=0.15)
+        minus_label = Text("-1", font=FONT, font_size=26, color=C_TEXT)
+        minus_label.next_to(center + LEFT * R, DL, buff=0.15)
+
+        # 公式（mathtext 预渲染 PNG；有 LaTeX 的机器可换 MathTex）
+        formula = ImageMobject(
+            str(Path(__file__).with_name("png") / "euler_identity.png"))
+        formula.height = 0.62
+        formula.move_to([3.1, -0.15, 0])
+
+        self.add(cross, circle, arc, vector, landing,
+                 pi_label, one_label, minus_label, formula)
         self.wait(0.1)
 
 
