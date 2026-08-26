@@ -24,6 +24,8 @@
 | B4 | 同位置公式替换用交叉淡入淡出：`old.animate.set_opacity(0)` 与 `new.animate.set_opacity(1)` 同帧播放 | 顺序替换：`play(old.animate.set_opacity(0))` 完成后再 `play(new.animate.set_opacity(1))`（或用 `TransformMatchingTex`） | 过渡期两个半透明公式堆叠，糊成一团无法阅读（2026-08-26 复刻 3B1B 导数几何系列抽帧抓获） |
 | B5 | 描边框用 `box.animate.set_opacity(1)` 显现 | `box.set_fill(opacity=0)` 锁死填充，只动 `set_stroke(opacity=...)`，或直接用 `Create(box)` | `set_opacity` 把填充一起拉满，实心色块盖住框内公式（同日同批抓获，SurroundingRectangle 重灾区） |
 | B6 | 密集区标签手写偏移坐标（如 `Ppos + UP*0.48 + LEFT*0.14`） | 用几何关系定位：角平分线方向 `normalize(u1+u2)`、`next_to(参照物, 方向, buff≥0.2)` | 手写偏移换一个参数就撞车；几何定位随图形自适应（同日正弦场景 P 点三标签相撞事故） |
+| B7 | 多幕场景前一幕演员留在原地不退场 | 转场时处理旧演员：`FadeOut` 退场，或 `scale(0.5).move_to(顶部)` 缩小置顶留作对照 | 新幕道具直接叠在旧演员身上，画面撞车（2026-08-27 第7章 TransformFamily 第三幕星圆卡片三叠事故） |
+| B8 | 会动/会转的元素按静止时占地划位置（如自转文字放右下角） | 按其活动范围划地盘：旋转体会扫过比静止 footprint 大一圈的区域，避开注释条锚点（DOWN*3.2） | 旋转中文字扫进注释条区域，两段文字重叠不可读（同日 UpdaterDemo 抽帧抓获） |
 
 ## C. 文字与动态文本类
 
