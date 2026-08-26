@@ -21,6 +21,9 @@
 | B1 | 交换用两个 `animate.move_to` 直线对穿 | `CyclicReplace(a, b)` 弧线互换 | 直线对穿互相遮挡；弧线轨迹本身在解释"交换" |
 | B2 | 一个 `play` 里塞 5 个以上动画 | 按教学节拍拆成多个 `play` | 动画的每个节拍要等得起一句讲解 |
 | B3 | `VGroup` 元素交换后仍用旧下标引用 | 交换后立即同步 VGroup 内的引用顺序 | 视图与数据不同步，后续比较结果全错 |
+| B4 | 同位置公式替换用交叉淡入淡出：`old.animate.set_opacity(0)` 与 `new.animate.set_opacity(1)` 同帧播放 | 顺序替换：`play(old.animate.set_opacity(0))` 完成后再 `play(new.animate.set_opacity(1))`（或用 `TransformMatchingTex`） | 过渡期两个半透明公式堆叠，糊成一团无法阅读（2026-08-26 复刻 3B1B 导数几何系列抽帧抓获） |
+| B5 | 描边框用 `box.animate.set_opacity(1)` 显现 | `box.set_fill(opacity=0)` 锁死填充，只动 `set_stroke(opacity=...)`，或直接用 `Create(box)` | `set_opacity` 把填充一起拉满，实心色块盖住框内公式（同日同批抓获，SurroundingRectangle 重灾区） |
+| B6 | 密集区标签手写偏移坐标（如 `Ppos + UP*0.48 + LEFT*0.14`） | 用几何关系定位：角平分线方向 `normalize(u1+u2)`、`next_to(参照物, 方向, buff≥0.2)` | 手写偏移换一个参数就撞车；几何定位随图形自适应（同日正弦场景 P 点三标签相撞事故） |
 
 ## C. 文字与动态文本类
 
