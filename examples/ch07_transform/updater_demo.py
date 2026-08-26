@@ -33,10 +33,10 @@ class UpdaterDemo(Scene):
         self.add(target, base, arrow)
 
         # 时间型：角落的秒针文字，每帧累积 dt 自转
-        # 放右上：避开底部注释条锚点（DOWN*3.2 附近会被旋转扫到）
+        # 放在右上区域内侧：避开底部注释条锚点，也防止旋转扫出画面右缘
         spinner = Text("时间型 updater 在自转", font=FONT,
                        font_size=20, color=GREY_B)
-        spinner.to_corner(UR, buff=0.6)
+        spinner.move_to(RIGHT * 4.2 + UP * 2.2)
         spinner.add_updater(lambda m, dt: m.rotate(0.25 * dt))
         self.add(spinner)
 
