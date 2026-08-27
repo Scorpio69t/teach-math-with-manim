@@ -29,6 +29,7 @@
 | B9 | 三维场景里对钉屏文字（fixed_in_frame）用 Transform 更新 | 钉屏文字更新用"卸钉 → `remove` → 换件 → 再钉"瞬切：先 `remove_fixed_in_frame_mobjects(old)` 再 `self.remove(old)`（卸钉只是解绑，对象还躺在三维舞台上），然后 `add_fixed_in_frame_mobjects(new)` | Transform 会把钉屏对象拖进三维空间躺平；只卸钉不 remove，旧注释以三维身份留在舞台上越积越多（2026-08-27 第8章三维四场景集体事故） |
 | B10 | 三维钉屏数值面板用 `DecimalNumber.set_value` 更新 | 改用 `Text` + updater 里 `become(Text(f"{v:.2f}"))` 原地换内容；数字钉右缘、标签挂左（`lab.next_to(num, LEFT)`）防位数变长冲出右缘 | set_value 重建字模会脱离钉屏状态，数字跑到三维空间里；标签在左数字在右的布局会把数字顶出画面右缘（同日 ParaboloidSlices 面板事故） |
 | B11 | 滑参动画让参数连续路过退化值（如 a 从 1 滑到 −0.5 必经 a≈0），绘图区间按当前参数自适应（如 `√(5/|a|)`） | 对参与定义域计算的参数钳位：`a_safe = max(abs(a), 0.25)`，区间按钳位后的值算 | a→0 时 `√(5/|a|)` 爆炸，plot 区间撑到天文数字，点阵内存爆掉直接 MemoryError（申请 25.8 GiB），渲染崩在半路（2026-08-27 第9章 TransformStudio 事故） |
+| B12 | 数值面板"标签 next_to 锚点 + 数字右对齐同一锚点" | 两列钉缘：标签右缘钉死（`move_to((x1,y), aligned_edge=RIGHT)`）、数字左缘钉死（`move_to((x2,y), aligned_edge=LEFT)`），数字位数变化只向右生长 | 两个对象钉同一锚点必叠字；标签 next_to 数字则数字变宽时把标签顶飞（2026-08-27 第10章 CircleTheorems/VectorProof 面板叠字事故） |
 
 ## C. 文字与动态文本类
 
@@ -38,6 +39,7 @@
 | C2 | **动态字幕用空文本初始化再定位**：`Text(" ")` → `to_edge(DOWN)` | 用真实首句初始化 + 固定锚点：`CAPTION_POS = DOWN * 3.2`，更新时 `new.move_to(CAPTION_POS)` | 纯空格被渲染成零宽高对象，定位静默失效，文字停在画面中心与图形重叠（2026-08-20 冒泡演示视频实车事故） |
 | C3 | 更新文字：`remove(t); t2 = Text(...); add(t2)` | `t.become(Text(...))` 原地变形 | 先删后加造成闪烁；become 保持引用不变 |
 | C4 | 字幕/标签用 `MathTex` 渲染纯文字 | 纯文字一律用 `Text`（斜体用 `slant=ITALIC`） | MathTex 依赖 LaTeX 环境，无端增加安装门槛 |
+| C5 | 上屏特殊符号想当然（如 `⟹`、`⟺`） | 非常用符号先小样试屏；安全符号表：→、×、÷、²、½、°、✓；表达"推出"优先用汉字"即" | 字体缺字形时 Manim 静默渲染成豆腐块，不报错不警告（2026-08-27 第10章 PythagorasProof 横幅 ⟹ 豆腐块事故） |
 
 ## D. 工程习惯类
 
