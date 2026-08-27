@@ -14,7 +14,7 @@ class PositioningDemo(Scene):
     C_TEXT = "#EDEDED"
 
     def construct(self):
-        CAPTION_POS = DOWN * 3.2   # 字幕固定锚点（见 AGENTS.md §6.1）
+        CAPTION_POS = DOWN * 3.2   # 字幕固定锚点（本书动态文本规范：换内容不换对象）
 
         # 淡色坐标网当"黑板坐标纸"：让坐标数字可见，是定位直觉的第一步
         grid = NumberPlane(
