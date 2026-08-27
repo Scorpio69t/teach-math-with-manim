@@ -26,6 +26,8 @@
 | B6 | 密集区标签手写偏移坐标（如 `Ppos + UP*0.48 + LEFT*0.14`） | 用几何关系定位：角平分线方向 `normalize(u1+u2)`、`next_to(参照物, 方向, buff≥0.2)` | 手写偏移换一个参数就撞车；几何定位随图形自适应（同日正弦场景 P 点三标签相撞事故） |
 | B7 | 多幕场景前一幕演员留在原地不退场 | 转场时处理旧演员：`FadeOut` 退场，或 `scale(0.5).move_to(顶部)` 缩小置顶留作对照 | 新幕道具直接叠在旧演员身上，画面撞车（2026-08-27 第7章 TransformFamily 第三幕星圆卡片三叠事故） |
 | B8 | 会动/会转的元素按静止时占地划位置（如自转文字放右下角） | 按其活动范围划地盘：旋转体会扫过比静止 footprint 大一圈的区域，避开注释条锚点（DOWN*3.2） | 旋转中文字扫进注释条区域，两段文字重叠不可读（同日 UpdaterDemo 抽帧抓获） |
+| B9 | 三维场景里对钉屏文字（fixed_in_frame）用 Transform 更新 | 钉屏文字更新用"卸钉 → `remove` → 换件 → 再钉"瞬切：先 `remove_fixed_in_frame_mobjects(old)` 再 `self.remove(old)`（卸钉只是解绑，对象还躺在三维舞台上），然后 `add_fixed_in_frame_mobjects(new)` | Transform 会把钉屏对象拖进三维空间躺平；只卸钉不 remove，旧注释以三维身份留在舞台上越积越多（2026-08-27 第8章三维四场景集体事故） |
+| B10 | 三维钉屏数值面板用 `DecimalNumber.set_value` 更新 | 改用 `Text` + updater 里 `become(Text(f"{v:.2f}"))` 原地换内容；数字钉右缘、标签挂左（`lab.next_to(num, LEFT)`）防位数变长冲出右缘 | set_value 重建字模会脱离钉屏状态，数字跑到三维空间里；标签在左数字在右的布局会把数字顶出画面右缘（同日 ParaboloidSlices 面板事故） |
 
 ## C. 文字与动态文本类
 
