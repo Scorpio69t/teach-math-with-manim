@@ -28,6 +28,7 @@
 | B8 | 会动/会转的元素按静止时占地划位置（如自转文字放右下角） | 按其活动范围划地盘：旋转体会扫过比静止 footprint 大一圈的区域，避开注释条锚点（DOWN*3.2） | 旋转中文字扫进注释条区域，两段文字重叠不可读（同日 UpdaterDemo 抽帧抓获） |
 | B9 | 三维场景里对钉屏文字（fixed_in_frame）用 Transform 更新 | 钉屏文字更新用"卸钉 → `remove` → 换件 → 再钉"瞬切：先 `remove_fixed_in_frame_mobjects(old)` 再 `self.remove(old)`（卸钉只是解绑，对象还躺在三维舞台上），然后 `add_fixed_in_frame_mobjects(new)` | Transform 会把钉屏对象拖进三维空间躺平；只卸钉不 remove，旧注释以三维身份留在舞台上越积越多（2026-08-27 第8章三维四场景集体事故） |
 | B10 | 三维钉屏数值面板用 `DecimalNumber.set_value` 更新 | 改用 `Text` + updater 里 `become(Text(f"{v:.2f}"))` 原地换内容；数字钉右缘、标签挂左（`lab.next_to(num, LEFT)`）防位数变长冲出右缘 | set_value 重建字模会脱离钉屏状态，数字跑到三维空间里；标签在左数字在右的布局会把数字顶出画面右缘（同日 ParaboloidSlices 面板事故） |
+| B11 | 滑参动画让参数连续路过退化值（如 a 从 1 滑到 −0.5 必经 a≈0），绘图区间按当前参数自适应（如 `√(5/|a|)`） | 对参与定义域计算的参数钳位：`a_safe = max(abs(a), 0.25)`，区间按钳位后的值算 | a→0 时 `√(5/|a|)` 爆炸，plot 区间撑到天文数字，点阵内存爆掉直接 MemoryError（申请 25.8 GiB），渲染崩在半路（2026-08-27 第9章 TransformStudio 事故） |
 
 ## C. 文字与动态文本类
 
