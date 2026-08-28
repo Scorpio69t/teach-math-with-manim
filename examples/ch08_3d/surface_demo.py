@@ -10,7 +10,7 @@ class SurfaceDemo(ThreeDScene):
 
     def set_note(self, msg):
         """三维钉屏铁律：fixed_in_frame 文字不能走 Transform（会被
-        拖进三维空间躺平）。卸钉 -> 换件 -> 再钉，瞬切更新。"""
+        拖进三维空间躺平）。新建 -> 卸钉 -> remove -> 再钉，瞬切更新。"""
         new = Text(msg, font=FONT, font_size=26, color=C_TEXT)
         new.move_to(NOTE_POS)
         self.remove_fixed_in_frame_mobjects(self.note)

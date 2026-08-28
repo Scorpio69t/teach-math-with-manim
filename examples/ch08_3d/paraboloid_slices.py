@@ -10,13 +10,40 @@ class ParaboloidSlices(ThreeDScene):
 
     def set_note(self, msg):
         """三维钉屏铁律：fixed_in_frame 文字不能走 Transform（会被
-        拖进三维空间躺平）。卸钉 -> 换件 -> 再钉，瞬切更新。"""
+        拖进三维空间躺平）。新建 -> 卸钉 -> remove -> 再钉，瞬切更新。"""
         new = Text(msg, font=FONT, font_size=26, color=C_TEXT)
         new.move_to(NOTE_POS)
         self.remove_fixed_in_frame_mobjects(self.note)
         self.remove(self.note)   # 卸钉只是解绑，它还躺在三维舞台上
         self.note = new
         self.add_fixed_in_frame_mobjects(self.note)
+
+    def make_height_panel(self, value):
+        """每次返回一块完整的新面板，避免替换已钉屏对象的子对象。"""
+        label = MathTex("h=", font_size=44)
+        number = Text(f"{value:.2f}", font=FONT,
+                      font_size=40, color=GOLD)
+        return VGroup(label, number).arrange(RIGHT, buff=0.12).to_corner(
+            UR, buff=0.6)
+
+    def set_height_panel(self, value):
+        """三维钉屏数字更新：新建 -> 卸钉 -> remove -> 再钉。"""
+        new_panel = self.make_height_panel(value)
+        self.remove_fixed_in_frame_mobjects(self.height_panel)
+        self.remove(self.height_panel)
+        self.add_fixed_in_frame_mobjects(new_panel)
+        self.height_panel = new_panel
+
+    def animate_height_to(self, tracker, target, run_time, steps=21):
+        """分段播放；只在相邻 play 之间安全替换钉屏面板。"""
+        start = tracker.get_value()
+        for value in np.linspace(start, target, steps + 1)[1:]:
+            self.play(
+                tracker.animate.set_value(value),
+                run_time=run_time / steps,
+                rate_func=linear,
+            )
+            self.set_height_panel(value)
 
     def construct(self):
         title = Text("切片升起来，碗就长出来了", font=FONT,
@@ -59,33 +86,20 @@ class ParaboloidSlices(ThreeDScene):
 
         ring = always_redraw(make_circle)
 
-        # 数值面板：h = 当前值（钉屏 2D，不跟三维转）
-        # 三维钉屏面板的数字不能用 DecimalNumber.set_value（重建字模会
-        # 脱离钉屏状态），改用 Text + updater 里 become 原地换内容；
-        # 数字钉右缘、标签挂左边，防止位数变长时冲出画面右边
-        num = Text("0.05", font=FONT, font_size=40, color=GOLD)
-        num.to_corner(UR, buff=0.6)
-        lab = MathTex("h=", font_size=44)
-        lab.next_to(num, LEFT, buff=0.12)
-
-        def refresh(d):
-            d.become(Text(f"{h.get_value():.2f}", font=FONT,
-                          font_size=40, color=GOLD)
-                     .to_corner(UR, buff=0.6))
-
-        num.add_updater(refresh)
-        self.add_fixed_in_frame_mobjects(title, self.note, lab, num)
+        # 数值面板自身不挂 updater。高度动画分成短段，每段 play 结束后
+        # 整块新建面板，再走“卸钉 -> remove -> 再钉”四步。
+        self.height_panel = self.make_height_panel(h.get_value())
+        self.add_fixed_in_frame_mobjects(
+            title, self.note, self.height_panel)
 
         self.play(Create(axes), run_time=1.2)
         self.add(bowl, plane, ring)
         self.wait(1)
 
         self.set_note("切片升高——交线始终是个圆")
-        self.play(h.animate.set_value(3.2), run_time=5,
-                  rate_func=linear)
+        self.animate_height_to(h, 3.2, run_time=5)
         self.wait(1.5)
 
         self.set_note("圆越大，半径 = √h——这就是碗的横截面")
-        self.play(h.animate.set_value(0.05), run_time=3,
-                  rate_func=linear)
+        self.animate_height_to(h, 0.05, run_time=3)
         self.wait(1.5)
