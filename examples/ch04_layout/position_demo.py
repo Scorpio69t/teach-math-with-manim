@@ -24,7 +24,7 @@ class PositioningDemo(Scene):
         )
         self.add(grid)
 
-        caption = Text("第一幕：move_to——报到坐标原点", font=FONT,
+        caption = Text("第一幕：move_to——报到指定坐标", font=FONT,
                        font_size=28, color=self.C_TEXT).move_to(CAPTION_POS)
         self.play(FadeIn(caption), run_time=0.5)
 
