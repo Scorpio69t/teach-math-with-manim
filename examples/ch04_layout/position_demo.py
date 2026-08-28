@@ -30,12 +30,11 @@ class PositioningDemo(Scene):
 
         # 第一幕：绝对坐标。方块被"指派"到坐标 (3, 1.5)，不管它原来在哪
         seat = Square(side_length=1.2, color=GOLD, fill_opacity=0.6)
-        coord_label = Text("", font=FONT, font_size=24, color=GOLD)
         self.play(FadeIn(seat), run_time=0.6)
         self.play(seat.animate.move_to(RIGHT * 3 + UP * 1.5), run_time=1.2)
-        coord_label.become(
-            Text("坐标 (3.0, 1.5)", font=FONT, font_size=24, color=GOLD)
-            .next_to(seat, UP, buff=0.3))
+        coord_label = Text("坐标 (3.0, 1.5)", font=FONT,
+                           font_size=24, color=GOLD)
+        coord_label.next_to(seat, UP, buff=0.3)
         self.play(FadeIn(coord_label), run_time=0.4)
         self.wait(1.2)
 
