@@ -39,6 +39,7 @@ class FourierStar(Scene):
         # ===== 信号与分解（离散傅里叶变换） =====
         signal, verts = star_contour()
         NPTS = len(signal)
+        # z = x + iy 是复值序列；正、负频率系数一般相互独立
         coeffs = np.fft.fft(signal) / NPTS
         freqs = np.array([j if j <= NPTS // 2 else j - NPTS
                           for j in range(NPTS)])
