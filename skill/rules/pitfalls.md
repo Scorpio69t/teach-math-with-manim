@@ -13,6 +13,8 @@
 | A3 | `TextMobject("标题")` / `TexMobject` | `Text("标题")` / `MathTex` | 前者是 GL 名称，CE 已改名 |
 | A4 | `manim file.py Scene` 无参数直接渲 | 显式指定画质：`-ql` 验证 / `-qh` 出片 | 无参数默认行为随版本变化，且容易渲出不需要的高清长视频 |
 | A5 | 2D 运镜场景里 `self.camera.add_fixed_in_frame_mobjects(m)` | 用 updater 钉屏：`pin_to_screen(self.camera, m, "UL")`（每帧按取景框中心与缩放重算位置和尺寸，见 ch06_camera/hud_demo.py） | 该方法只存在于 `ThreeDCamera`（0.21 源码核实），`MovingCamera` 调用报 AttributeError（2026-08-26 第 6 章初稿真机渲染抓获，凭记忆写 API 的代价） |
+| A6 | `TracedPath(tip_dot)` 传 mobject | `TracedPath(tip.get_center)` 传 callable，mobject 另用 updater 驱动 | 当前 CE 版本首参是 traced_point_func，传对象报 `'Dot' object is not callable`（2026-08-28 第15章 FourierStar 事故） |
+| A7 | `DashedVMobject(circle, dash_length=0.06)` | `DashedVMobject(circle, num_dashes=30)` | 当前版本无 dash_length 参数，报 `unexpected keyword argument`（2026-08-28 同场景事故） |
 
 ## B. 动画设计类
 
@@ -30,6 +32,7 @@
 | B10 | 三维钉屏数值面板用 `DecimalNumber.set_value` 更新 | 改用 `Text` + updater 里 `become(Text(f"{v:.2f}"))` 原地换内容；数字钉右缘、标签挂左（`lab.next_to(num, LEFT)`）防位数变长冲出右缘 | set_value 重建字模会脱离钉屏状态，数字跑到三维空间里；标签在左数字在右的布局会把数字顶出画面右缘（同日 ParaboloidSlices 面板事故） |
 | B11 | 滑参动画让参数连续路过退化值（如 a 从 1 滑到 −0.5 必经 a≈0），绘图区间按当前参数自适应（如 `√(5/|a|)`） | 对参与定义域计算的参数钳位：`a_safe = max(abs(a), 0.25)`，区间按钳位后的值算 | a→0 时 `√(5/|a|)` 爆炸，plot 区间撑到天文数字，点阵内存爆掉直接 MemoryError（申请 25.8 GiB），渲染崩在半路（2026-08-27 第9章 TransformStudio 事故） |
 | B12 | 数值面板"标签 next_to 锚点 + 数字右对齐同一锚点" | 两列钉缘：标签右缘钉死（`move_to((x1,y), aligned_edge=RIGHT)`）、数字左缘钉死（`move_to((x2,y), aligned_edge=LEFT)`），数字位数变化只向右生长 | 两个对象钉同一锚点必叠字；标签 next_to 数字则数字变宽时把标签顶飞（2026-08-27 第10章 CircleTheorems/VectorProof 面板叠字事故） |
+| B13 | "指针已就位"循环写 `range(2, N+2)` | 先数清楚剩余次数：指针已在 z1 上，到 z1^N 只需 `range(2, N+1)`（N−1 次） | 多转一次越过目标落点，计数牌翻出 z1^6，扫圈论证当场穿帮（2026-08-28 第15章 UnitRoots 抽帧抓获） |
 
 ## C. 文字与动态文本类
 
