@@ -5,7 +5,8 @@ C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
 
 X_MIN, X_MAX = -0.4, 4 * PI + 0.4
-TERMS = [1, 3, 5, 7]              # 方波的前四项：sin(kx)/k
+TERMS = [1, 3, 5, 7]              # 方波的前四个奇次谐波
+FOURIER_SCALE = 4 / PI             # 把平台归一化到 ±1
 
 
 def square_wave(x):
@@ -15,7 +16,9 @@ def square_wave(x):
 
 def partial_sum(n_terms):
     def f(x):
-        return sum(np.sin(k * x) / k for k in TERMS[:n_terms])
+        return FOURIER_SCALE * sum(
+            np.sin(k * x) / k for k in TERMS[:n_terms]
+        )
     return f
 
 
@@ -78,10 +81,10 @@ class FourierStack(Scene):
         p_title.to_corner(UR, buff=0.6).shift(UP * 0.15)
         self.play(FadeIn(p_title), run_time=0.5)
 
-        term_texts = ["sin x",
-                      "sin x + (1/3)·sin 3x",
-                      "… + (1/5)·sin 5x",
-                      "… + (1/7)·sin 7x"]
+        term_texts = ["(4/π)·sin x",
+                      "(4/π)·[sin x + (1/3)·sin 3x]",
+                      "(4/π)·[… + (1/5)·sin 5x]",
+                      "(4/π)·[… + (1/7)·sin 7x]"]
         cur_formula = Text("项数 n = 0", font=FONT, font_size=26,
                            color=GOLD)
         cur_formula.to_corner(UR, buff=0.6).shift(DOWN * 0.35)
@@ -95,14 +98,14 @@ class FourierStack(Scene):
 
         # ===== 逐项叠加 =====
         sum_curve = None
-        notes = ["第一个音：y = sin x——圆滑，离方波还很远",
+        notes = ["第一个音：y = (4/π) sin x——圆滑，离方波还很远",
                  "加入三倍频：波峰开始被'顶'平",
                  "再加五倍频：平台更平，边缘更陡",
                  "七倍频到位：方波的轮廓已经肉眼可辨"]
         for i, k in enumerate(TERMS):
             n = i + 1
             # 先单独亮出这一项（虚线），再叠进总和
-            comp = ax.plot(lambda x: np.sin(k * x) / k,
+            comp = ax.plot(lambda x: FOURIER_SCALE * np.sin(k * x) / k,
                            x_range=[0, 4 * PI], color=TEAL,
                            stroke_width=2.5)
             comp.set_stroke(opacity=0.9)
@@ -122,14 +125,16 @@ class FourierStack(Scene):
 
         # ===== 结案 =====
         self.set_note("棱角的代价：跳变处总有一撮压不下去的'小耳朵'")
-        # 标出 Gibbs 过冲位置（x=0 附近）
+        # 四项和在 x=2π 右侧的首个极大值位于 x=2π+π/8
+        peak_x = 2 * PI + PI / (2 * len(TERMS))
+        peak_y = partial_sum(len(TERMS))(peak_x)
         ear = Circle(radius=0.35, color=RED, stroke_width=3)
-        ear.move_to(ax.c2p(0.0, 1.15))
+        ear.move_to(ax.c2p(peak_x, peak_y))
         self.play(Create(ear), run_time=0.8)
         self.wait(1.4)
         self.play(FadeOut(ear), run_time=0.5)
 
-        self.set_note("项数趋向无穷，和就是方波——这就是傅里叶级数")
+        self.set_note("除跳变点外，项数越多就越接近方波")
         self.play(Indicate(sum_curve, color=GOLD), run_time=1.2)
         final = Text("任何周期波，都是一堆正弦波的合唱",
                      font=FONT, font_size=28, weight=BOLD, color=GOLD)
