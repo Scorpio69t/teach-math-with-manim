@@ -2,7 +2,7 @@ from manim import *
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 S = 3.6                   # 单位正方形边长（场景单位）
 SQ = LEFT * 3.4 + DOWN * 0.9   # 正方形左下角

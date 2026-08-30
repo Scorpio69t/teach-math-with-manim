@@ -15,7 +15,7 @@ class TransformStoryScene(Scene):
     C_MUTED = "#9AA3C0"
 
     def construct(self):
-        CAPTION_POS = DOWN * 3.2   # 字幕固定锚点（本书动态文本规范：换内容不换对象）
+        CAPTION_POS = DOWN * 3.2   # 字幕固定锚点（换内容时保持位置稳定）
         caption = Text("第一幕：一个圆的诞生", font=FONT, font_size=30,
                        color=self.C_TEXT)
         caption.move_to(CAPTION_POS)

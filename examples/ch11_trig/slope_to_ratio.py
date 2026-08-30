@@ -2,7 +2,7 @@ from manim import *
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 # 3-4-5 相似族：坡角 arctan(0.75) ≈ 36.87°
 A0 = np.array([-3.2, -1.6, 0])   # 角 A 的顶点（缩放不动点）

@@ -2,7 +2,7 @@ from manim import *
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 C_F = 1.8                 # 半焦距 c
 A0 = 3.0                  # 初始半长轴 a（绳长一半）

@@ -3,7 +3,7 @@ import numpy as np
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 U = 0.7                    # 单位 1 的屏幕长度
 CENTER = np.array([-0.3, 0.7, 0])   # 复平面原点（给螺线留生长空间）

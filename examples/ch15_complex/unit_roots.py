@@ -3,7 +3,7 @@ import numpy as np
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 R = 1.8                              # 单位圆屏幕半径
 C0 = np.array([0, 0.3, 0])           # 圆心

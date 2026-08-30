@@ -3,7 +3,7 @@ import numpy as np
 
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
-NOTE_POS = DOWN * 3.4     # 注释条固定锚点（本书动态文本规范：换内容不换对象）
+NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
 N_FLIPS = 10000
 N_PLOT = 400    # 描点总数（前期密、后期疏，√刻度下均匀）
