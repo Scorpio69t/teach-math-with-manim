@@ -17,7 +17,7 @@ class VectorProof(Scene):
                          .move_to(NOTE_POS))
 
     def pinned(self, getter, anchor, color=GOLD, fmt="{:.2f}", size=30):
-        """钉屏数值行：数字钉右缘（B10 规矩），become 原地刷新。"""
+        """钉屏数值行：数字钉右缘，become 原地刷新。"""
         num = Text(fmt.format(getter()), font=FONT, font_size=size,
                    color=color)
         num.move_to(anchor, aligned_edge=LEFT)
