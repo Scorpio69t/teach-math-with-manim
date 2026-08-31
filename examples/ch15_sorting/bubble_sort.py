@@ -1,7 +1,7 @@
 """冒泡排序教学动画（精修演示版，ManimCE v0.18+）
 
 渲染：manim -pqh bubble_sort.py BubbleSortScene
-对应图书《Manim，让数学看得见》第 15 章。
+可运行的 ManimCE 冒泡排序教学案例。
 
 设计要点（与书中"排序动画三要素"一致）：
 - 颜色语义：金=正在比较，红=发生交换，绿=已就位，暗蓝灰=未参与；
@@ -180,7 +180,7 @@ class BubbleSortScene(Scene):
               for c in cells], lag_ratio=0.12), run_time=1.2 * pace)
         self.play(set_caption("排序完成：每一轮，最大的泡泡都冒到了它该在的位置",
                               self.C_SORTED), run_time=0.5)
-        self.wait(3.0 * pace)   # 金句停留，适合截图当封面帧
+        self.wait(3.0 * pace)   # 金句停留，留出完整阅读时间
 
     @staticmethod
     def make_pointer(label):
