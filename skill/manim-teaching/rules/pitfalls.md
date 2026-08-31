@@ -46,6 +46,7 @@
 | C6 | **三维钉屏文字用 become() 换词** | ThreeDScene 里 become 的子对象会脱落钉屏；必须四步：建新对象 → `remove_fixed_in_frame_mobjects(旧)` → `remove(旧)` → `add_fixed_in_frame_mobjects(新)` | become 替换的子对象不在相机 fixed 名单里，文字躺到 3D 地面成透视残影（2026-08-28 第13章四脚本集体事故）；C3 的 become 铁律仅限二维 |
 | C7 | 只 `remove_fixed_in_frame_mobjects` 不 `remove` | 摘钉后必须再 `remove()` 摘除场景 | remove_fixed 只摘钉不摘场景，旧文字作为普通 3D 物体残留在地面（2026-08-28 同事故第二层残影） |
 | C8 | 三维曲面用默认分辨率批量造（如 12 个 Cylinder） | 显式降采样：`Cylinder(resolution=(2,16))` 等；提示词里永远写明 resolution | 默认网格极密，12 枚硬币默认 11 分钟 vs 降采样 23 秒（2026-08-28 第13章 ZugengPrinciple） |
+| C9 | 把 become 包进 play：`self.play(note.become(Text(...)))` | become 不进 play——封装成 `set_note` 助手直接瞬时换词（二维场景惯例）；要过渡动画才用 `note.animate.become(...)` | `become` 返回 mobject 本身而非 Animation，传进 play 报 `Unexpected argument VMobjectFromSVGPath passed to Scene.play()`（2026-08-31 附录 B 三场景初稿事故，render_check 抓获） |
 
 ## D. 工程习惯类
 
