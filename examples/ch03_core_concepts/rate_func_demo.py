@@ -12,8 +12,8 @@ class RateFuncDemo(Scene):
     """三个小球走同样的路，唯一区别是节奏函数——一眼看懂 rate_func。"""
 
     def construct(self):
-        # 起点与终点的参考线
-        start_line = DashedLine(UP * 2.2, DOWN * 2.2, color=GREY).shift(LEFT * 4.5)
+        # 起点与终点的参考线（起点右移，给左侧标签留出版面）
+        start_line = DashedLine(UP * 2.2, DOWN * 2.2, color=GREY).shift(LEFT * 1.5)
         end_line = DashedLine(UP * 2.2, DOWN * 2.2, color=GREY).shift(RIGHT * 4.5)
         self.add(start_line, end_line)
 
@@ -25,7 +25,7 @@ class RateFuncDemo(Scene):
 
         balls, labels = VGroup(), VGroup()
         for name, _, color, offset in rows:
-            ball = Dot(radius=0.18, color=color).shift(LEFT * 4.5 + offset)
+            ball = Dot(radius=0.18, color=color).shift(LEFT * 1.5 + offset)
             label = Text(name, font=FONT, font_size=22,
                          color=color).next_to(ball, LEFT, buff=0.3)
             balls.add(ball)
@@ -34,9 +34,9 @@ class RateFuncDemo(Scene):
 
         # 同一个动作，三种节奏
         self.play(
-            balls[0].animate(rate_func=smooth).shift(RIGHT * 9),
-            balls[1].animate(rate_func=linear).shift(RIGHT * 9),
-            balls[2].animate(rate_func=there_and_back).shift(RIGHT * 9),
+            balls[0].animate(rate_func=smooth).shift(RIGHT * 6),
+            balls[1].animate(rate_func=linear).shift(RIGHT * 6),
+            balls[2].animate(rate_func=there_and_back).shift(RIGHT * 6),
             run_time=3,
         )
         self.wait(1)
