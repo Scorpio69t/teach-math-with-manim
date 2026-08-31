@@ -29,7 +29,7 @@ class PositioningDemo(Scene):
         self.play(FadeIn(caption), run_time=0.5)
 
         # 第一幕：绝对坐标。方块被"指派"到坐标 (3, 1.5)，不管它原来在哪
-        seat = Square(side_length=1.2, color=GOLD, fill_opacity=0.6)
+        seat = Square(side_length=1.2, color=GOLD, fill_opacity=1.0)
         self.play(FadeIn(seat), run_time=0.6)
         self.play(seat.animate.move_to(RIGHT * 3 + UP * 1.5), run_time=1.2)
         coord_label = Text("坐标 (3.0, 1.5)", font=FONT,
@@ -42,6 +42,7 @@ class PositioningDemo(Scene):
         caption.become(Text("第二幕：shift——向左挪 4 格，向下挪 2 格",
                             font=FONT, font_size=28,
                             color=self.C_TEXT).move_to(CAPTION_POS))
+        self.play(FadeOut(coord_label), run_time=0.4)   # 坐标标签只服务第一幕
         self.play(seat.animate.shift(LEFT * 4 + DOWN * 2), run_time=1.4)
         self.wait(1.2)
 
