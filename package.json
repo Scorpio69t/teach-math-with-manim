@@ -1,0 +1,28 @@
+{
+  "name": "teach-math-with-manim",
+  "version": "0.1.0",
+  "description": "图书《Manim，让数学看得见》配套开源仓库：60+ 教学动画案例源码 + manim-teaching AI Skill（含 DeepSeek Harness 插件）",
+  "type": "module",
+  "exports": {
+    "./skill/dsh-plugin": "./skill/dsh-plugin/index.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "keywords": [
+    "manim",
+    "math-animation",
+    "teaching",
+    "agent-skills",
+    "deepseek-harness",
+    "dsh-plugin"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Scorpio69t/teach-math-with-manim.git"
+  }
+}

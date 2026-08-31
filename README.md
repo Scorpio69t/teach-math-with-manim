@@ -38,7 +38,7 @@ teach-math-with-manim/
 │   ├── ch09_functions/
 │   ├── ch15_sorting/
 │   └── ...
-├── skill/             # 自研 Manim 教学动画 AI Skill（见下）
+├── skill/             # 自研 Manim 教学动画 AI Skill（含 dsh 插件与安装脚本，见下）
 ├── templates/         # 可复用模板：SortScene 基类、教学场景骨架等
 ├── tools/             # 辅助脚本：渲染检查、批量导出等
 └── README.md
@@ -52,7 +52,20 @@ teach-math-with-manim/
 >
 > （番外示例：排序动画是检验颜色语义与节奏控制的最佳试金石，故保留为 Skill 演示案例。）
 
-Skill 内置版本锁定（ManimCE）、避坑规则（GL/CE API 混用、已废弃接口等）与教学设计模板，生成结果自带颜色语义与节奏控制。
+Skill 内置版本锁定（ManimCE 0.21 白名单）、28+ 条避坑档案、教学风格规范（颜色语义 / 五件套版式 / 节奏纪律）、数学严谨性军规，以及五个经真实渲染验证的教学模板。
+
+三种安装方式（详见 [skill/README.md](skill/README.md)）：
+
+```bash
+# ① DeepSeek Harness 插件（本仓库即 dsh 插件包）
+dsh plugin --profile web add github:Scorpio69t/teach-math-with-manim
+
+# ② 一键脚本：自动探测本机已装的 10 种 AI Agent 并安装
+bash skill/install.sh            # macOS / Linux / Git Bash
+powershell -ExecutionPolicy Bypass -File skill\install.ps1   # Windows
+
+# ③ 纯对话工具：直接粘贴 skill/dist/manim-teaching-prompt.md 单文件版
+```
 
 ## 许可与引用
 

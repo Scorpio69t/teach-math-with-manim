@@ -1,0 +1,7 @@
+# teach-math-with-manim 的 dsh bundle 补丁：把技能注册插件插入 profile 的插件队列。
+# 随 `dsh plugin --profile web add github:Scorpio69t/teach-math-with-manim` 自动应用
+# （package.json 的 dsh.bundle.patch 声明），重启 dsh 后 manim-teaching 技能即出现在
+# 技能目录中，可被模型自动触发或在命令面板手动调用。
+- insert:
+    - id: dsh-manim-teaching
+      name: 'teach-math-with-manim/skill/dsh-plugin'
