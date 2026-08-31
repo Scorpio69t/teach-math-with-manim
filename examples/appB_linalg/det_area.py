@@ -5,7 +5,7 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55
-READOUT_POS = [4.9, 2.6, 0]
+READOUT_POS = [4.2, 2.2, 0]
 
 
 class DetAreaScene(Scene):
