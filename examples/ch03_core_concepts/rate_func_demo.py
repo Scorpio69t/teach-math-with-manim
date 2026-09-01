@@ -18,7 +18,7 @@ class RateFuncDemo(Scene):
         self.add(start_line, end_line)
 
         rows = [
-            ("smooth（默认：先快后慢）", smooth, BLUE, UP * 1.4),
+            ("smooth（默认：两端慢、中间快）", smooth, BLUE, UP * 1.4),
             ("linear（匀速：机械感）", linear, GOLD, ORIGIN),
             ("there_and_back（去而复返）", there_and_back, RED, DOWN * 1.4),
         ]
