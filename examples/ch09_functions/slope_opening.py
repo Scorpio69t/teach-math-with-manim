@@ -64,13 +64,13 @@ class SlopeAndOpening(Scene):
 
         # 第二幕：抛物线 y = ax²，a 是遥控器；y=x² 留作灰色参照
         self.set_note("换主角：y = ax²，a 管开口")
-        lab_k.clear_updaters()
+        num_k.clear_updaters()
         self.play(FadeOut(line), FadeOut(tri), FadeOut(lab_k),
                   FadeOut(num_k), run_time=1)
         ghost = axes.plot(lambda x: x**2, x_range=[-2.2, 2.2],
                           color=GREY_B, stroke_width=2)
         a = ValueTracker(1)
-        # a 过 0 附近时 |a| 趋零，x_range 必须钳住（否则定义域爆炸）
+        # a 过 0 附近时 |a| 趋零，显示窗口必须钳住，避免采样区间过宽
         para = always_redraw(lambda: axes.plot(
             lambda x: a.get_value() * x**2,
             x_range=[-min(np.sqrt(5 / max(abs(a.get_value()), 0.25)), 2.4),

@@ -3,6 +3,8 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+CROSS_X = 9.9600022593    # 2^x = 100x 在赛程后段的交点
+CROSS_Y = 100 * CROSS_X
 
 
 class GrowthRace(Scene):
@@ -62,8 +64,8 @@ class GrowthRace(Scene):
 
         self.set_note("继续跑：注意指数的脚印在翻倍")
         self.play(x.animate.set_value(10), run_time=3, rate_func=linear)
-        self.set_note("x=10：追平了！指数每过 1 步就翻一倍")
-        cross = Dot(axes.c2p(10, 1024), color=RED, radius=0.11)
+        self.set_note("x=10：指数已经反超！每过 1 步就翻一倍")
+        cross = Dot(axes.c2p(CROSS_X, CROSS_Y), color=RED, radius=0.11)
         self.play(Flash(cross, color=RED), FadeIn(cross), run_time=1)
         self.wait(1)
 
