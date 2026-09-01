@@ -134,9 +134,9 @@ class FourierStack(Scene):
         self.wait(1.4)
         self.play(FadeOut(ear), run_time=0.5)
 
-        self.set_note("除跳变点外，项数越多就越接近方波")
+        self.set_note("除跳变点外，部分和随项数增加收敛到方波")
         self.play(Indicate(sum_curve, color=GOLD), run_time=1.2)
-        final = Text("任何周期波，都是一堆正弦波的合唱",
+        final = Text("方波可以由奇次正弦谐波逐步逼近",
                      font=FONT, font_size=28, weight=BOLD, color=GOLD)
         final.move_to(UP * 2.9 + LEFT * 1.6)
         self.play(FadeIn(final), run_time=1.0)

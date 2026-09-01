@@ -118,7 +118,7 @@ class FigurateNumbers(Scene):
         self.wait(1.6)
         self.set_note("n = 4 时：4 × 5 ÷ 2 = 10，和一层一层数的一样")
         self.wait(2.0)
-        self.set_note("这就是高斯小时候秒算 1 加到 100 的几何底牌")
+        self.set_note("这就是首尾配对求 1 加到 100 的几何底牌")
         self.wait(2.6)
 
     def _pinned(self, label, row_anchor, getter, color=C_TEXT,

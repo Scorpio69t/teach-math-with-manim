@@ -108,7 +108,7 @@ class EllipseString(Scene):
 
         # ===== 退化一：2a → 2c，椭圆瘪成线段 =====
         self.set_note("现在把绳子收短：2a 逼近焦距 2c = 3.6")
-        self.play(self.trk_a.animate.set_value(C_F + 0.02),
+        self.play(self.trk_a.animate.set_value(C_F),
                   self.trk_t.animate.set_value(3 * PI),
                   run_time=3.5)
         self.wait(1.0)

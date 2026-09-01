@@ -100,5 +100,5 @@ class UnitRoots(Scene):
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)
         self.set_note("代数方程的解，原来是一幅几何图形")
         self.wait(2.2)
-        self.set_note("x^n = 1：n 个根，永远是正 n 边形")
+        self.set_note("x^n = 1 有 n 个单位根；n≥3 时组成正 n 边形")
         self.wait(2.6)

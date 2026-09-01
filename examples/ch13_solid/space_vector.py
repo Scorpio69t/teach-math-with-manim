@@ -71,7 +71,7 @@ class SpaceVector(ThreeDScene):
         # 垂足虚线：P 到 xOy 面
         drop = DashedLine(p3, pxy, color=GREY_B, dash_length=0.12)
         self.play(Create(drop), run_time=0.8)
-        self.set_note("P 到底面的投影，就是「先走两步再走一步」的终点")
+        self.set_note("P 到底面的投影，就是前两步位移的终点")
         self.wait(2.2)
 
         # ===== 法向量是平面的方向盘 =====

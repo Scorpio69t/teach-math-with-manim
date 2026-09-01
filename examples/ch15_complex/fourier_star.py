@@ -29,7 +29,7 @@ def star_contour():
 
 class FourierStar(Scene):
     """欧拉公式的华丽应用：9 支各按自身频率旋转的箭头首尾相接，
-    末端描出一颗五角星——这就是离散傅里叶级数。"""
+    末端描出五角星采样轮廓的有限 DFT 近似。"""
 
     def set_note(self, msg):
         self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
@@ -110,7 +110,7 @@ class FourierStar(Scene):
         self.set_note("最后一段，封口……")
         self.play(th.animate.set_value(2 * PI),
                   run_time=TRACE_TIME * 0.2, rate_func=linear)
-        self.set_note("一颗五角星——从 9 个圆里长出来的")
+        self.set_note("9 个最大分量正在近似重建五角星采样")
         self.wait(2.0)
 
         # ===== 对照：淡色原轮廓 =====
@@ -119,16 +119,16 @@ class FourierStar(Scene):
                         color=C_TEXT, stroke_width=1.5,
                         stroke_opacity=0.5)
         self.play(FadeIn(ghost), run_time=1.0)
-        self.set_note("和真实轮廓几乎重合——9 个圆已经够用")
+        self.set_note("九个最大分量给出当前轮廓的有限近似")
         self.play(th.animate.set_value(2 * PI * 1.15),
                   run_time=2.2, rate_func=linear)   # 让链条再活一会儿
         self.wait(1.0)
 
         # ===== 点题 =====
         self.remove(chain, tip)     # 箭头退场，轨迹与轮廓留下
-        verdict = Text("任何轮廓 = 一圈圈旋转的叠加（傅里叶级数）",
+        self.play(FadeOut(self.note), run_time=0.4)
+        verdict = Text("轮廓采样 ≈ 旋转向量的有限叠加（傅里叶近似）",
                        font=FONT, font_size=28, weight=BOLD, color=GOLD)
-        verdict.move_to([0, -2.9, 0])
+        verdict.scale_to_fit_width(12.8).move_to(DOWN * 3.15)
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)
-        self.set_note("从 i 到 e^(iθ) 再到傅里叶——复数的故事才刚开始")
         self.wait(3.0)

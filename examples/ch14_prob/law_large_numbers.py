@@ -137,7 +137,7 @@ class LawOfLargeNumbers(Scene):
         self.wait(1.6)
 
         # ===== 结案 =====
-        self.set_note("不是「纠偏」——下一次抛出正面的机会永远是 1/2")
+        self.set_note("在独立公平硬币模型里，下一次正面概率仍是 1/2")
         self.wait(2.4)
         self.set_note("频率会稳定于概率：这就是大数定律")
         self.wait(2.4)

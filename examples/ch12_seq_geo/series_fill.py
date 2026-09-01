@@ -11,12 +11,15 @@ N_TERMS = 6               # 填充 6 项
 
 class SeriesFill(Scene):
     """1/2 + 1/4 + 1/8 + … 依次填进单位正方形：
-    每一项都占剩余面积的一半，总和永远差一点点到 1。"""
+    每个有限部分和都小于 1；无穷级数的和等于 1。"""
 
     def set_note(self, msg):
         """注释条铁律：真实首句初始化 + 固定锚点 + become 换词。"""
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        new_note = Text(msg, font=FONT, font_size=26, color=C_TEXT)
+        if new_note.width > 12.4:
+            new_note.scale_to_fit_width(12.4)
+        self.note.become(new_note)
+        self.note.move_to(NOTE_POS)
 
     def regions(self):
         """螺旋对半分割：返回 6 个填充矩形及其分数标签。"""
@@ -101,7 +104,7 @@ class SeriesFill(Scene):
             "再填剩下的一半：1/4，水位 0.75",
             "再填剩下的一半：1/8，水位 0.875",
             "1/16：每次都只填剩余的一半",
-            "1/32：剩余越来越少，但永远有剩",
+            "1/32：当前有限部分和仍小于 1",
             "1/64：六项已到 0.984，离红线还差一截",
         ]
         partial = 0.0
@@ -136,9 +139,10 @@ class SeriesFill(Scene):
             self.wait(1.2)
 
         # ===== 结案 =====
-        self.set_note("永远只填剩余的一半：加到无穷，总和也到不了 1")
+        self.set_note("每个有限部分和都小于 1；无穷级数的和等于 1")
         self.wait(2.0)
         self.play(Indicate(target, color=RED), run_time=1.2)
+        self.wait(2.0)
         self.set_note("1/2 + 1/4 + 1/8 + … = 1——无限项，有限和，这叫收敛")
         self.wait(2.6)
         self.set_note("换成 1 + 1/2 + 1/3 + … 就填不满任何框：那叫发散")
