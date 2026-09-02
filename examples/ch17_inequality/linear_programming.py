@@ -121,9 +121,9 @@ class LinearProgramming(Scene):
         self.wait(2.4)
 
         # ===== 结案 =====
-        verdict = Text("最值在顶点：平移目标线，撞到的最后一个角就是答案",
+        verdict = Text("有界多边形可行域：至少有一个最优顶点",
                        font=FONT, font_size=28, weight=BOLD, color=GOLD)
         verdict.move_to(VERDICT_POS)
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)
-        self.set_note("所以线性规划只需比较顶点——几何替你删掉了无穷多个点")
+        self.set_note("本例只碰 (2, 2)；若贴住整条边，边上各点都最优")
         self.wait(2.8)
