@@ -3,6 +3,10 @@
 用法：python render_check.py <file.py> <SceneName>
 退出码 0 = RENDER_OK；非 0 = RENDER_FAILED（AI 自修复闭环据此判断）。
 验证用最低画质 -ql（480p），速度是 1080p 的 4~6 倍；通过后再用 -pqh 出片。
+
+注意：临时产物目录建在当前工作区内（前缀 .manim_check_，用完自动删除）。
+不要用系统临时目录——Windows 上 MiKTeX 的 dvisvgm 跨盘转换会静默失败
+（cwd 与 dvi 不同盘时退出码 -4、无任何报错输出，2026-09-02 实机抓获）。
 """
 
 import re
@@ -21,7 +25,7 @@ def main():
         print(f"RENDER_FAILED: 文件不存在 {file}")
         return 2
 
-    with tempfile.TemporaryDirectory(prefix="manim_check_") as media:
+    with tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".") as media:
         cmd = [sys.executable, "-m", "manim", "-ql", "--disable_caching",
                "--media_dir", media, file, scene]
         proc = subprocess.run(cmd, capture_output=True, text=True,

@@ -27,7 +27,9 @@
 
 - `Transform(a, b)` / `ReplacementTransform(a, b)` —— 变形 / 变形并替换引用
 - `TransformMatchingTex(a, b)` —— 公式按项对齐变形（MathTex 专用）
+- `TransformMatchingShapes(a, b)` —— 按子图形对齐变形（任意 VMobject 通用）
 - `CyclicReplace(a, b, ...)` —— 弧线互换位置，交换语义的标准演法
+- `LaggedStart(*anims, lag_ratio=0.15)` —— 同一组动画错峰启动，阵列入场的标准演法
 - `mobject.animate.move_to(p) / .set_value(v) / .set_color(c)` —— 属性动画
 - `MoveToTarget(mobject)` —— 先设 `m.target` 再播放
 
@@ -37,6 +39,13 @@
 - `MathTex(r"...")` —— 真公式才用，依赖 LaTeX 环境
 - `t.become(Text(...).move_to(原锚点))` —— 二维文字原地更新
 - `DecimalNumber(x, num_decimal_places=2)` —— 纯数字读数
+
+### 公式与零件化（MathTex 进阶）
+
+- `MathTex(r"x", r"=", r"\frac{-b \pm \sqrt{b^2-4ac}}{2a}")` —— 多参数拆件，每项成为可寻址子对象 `t[0]`、`t[2]`
+- `t.set_color_by_tex("x", RED)` —— 按子串染色；拆件后优先用下标 `t[0].set_color(RED)`，更稳
+- `TransformMatchingTex(a, b)` —— 按相同子串对齐变形，推导链换式的标准演法
+- `index_labels(t)` —— 调试专用：给每个子对象贴上序号小标签，拆件下标对不上时先用它看图（模块级函数，`self.play(Create(index_labels(t)))` 或 `self.add(index_labels(t))`，调完删掉）
 
 ### 数值驱动
 
@@ -54,7 +63,10 @@
 - `CurvedArrow(a, b, angle=TAU/3, tip_length=0.18)` —— 弧形箭头/循环示意
 - `Polygon(p1, p2, ..., fill_opacity=0.5)`、`Square(side_length=...)`、`Rectangle(width=..., height=...)`
 - `Circle(radius=...)`、`Arc(radius=..., start_angle=..., angle=..., arc_center=...)`
+- `Angle(line1, line2, radius=0.5)` —— 角标弧线；`RightAngle(line1, line2, length=0.3)` —— 直角符号
 - `VGroup(*items)`、`v.arrange(RIGHT, buff=...)`、`v.add(...)`
+- `v.arrange_in_grid(rows=2, cols=3, buff=0.6)` —— 网格排布，图鉴/多面板用
+- `Paragraph("第一行", "第二行", line_spacing=0.8)` —— 多行文字，自动换行对齐
 - `SurroundingRectangle(mobject, buff=0.2)` —— 描边框（填充必须锁 0）
 
 ### 布局定位
@@ -68,7 +80,7 @@
 - `Indicate(m, color=..., scale_factor=1.15)` —— 关键件闪烁放大
 - `Circumscribe(m)`、`Flash(p)`、`Wiggle(m)` —— 圈注 / 闪光 / 抖动
 - `ThreeDScene`：`self.set_camera_orientation(phi=..., theta=...)`；钉屏 `self.add_fixed_in_frame_mobjects(m)`
-- `MovingCameraScene`：`self.camera.frame`（无 add_fixed_in_frame_mobjects！）
+- `MovingCameraScene`：`self.camera.frame`（无 add_fixed_in_frame_mobjects！）；运镜用 `self.play(self.camera.frame.animate.set_width(6).move_to(p))` 链式属性动画
 
 ### 播放控制
 

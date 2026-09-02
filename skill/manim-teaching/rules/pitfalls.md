@@ -48,6 +48,7 @@
 | C7 | 只 `remove_fixed_in_frame_mobjects` 不 `remove` | 摘钉后必须再 `remove()` 摘除场景 | remove_fixed 只摘钉不摘场景，旧文字作为普通 3D 物体残留在地面（2026-08-28 同事故第二层残影） |
 | C8 | 三维曲面用默认分辨率批量造（如 12 个 Cylinder） | 显式降采样：`Cylinder(resolution=(2,16))` 等；提示词里永远写明 resolution | 默认网格极密，12 枚硬币默认 11 分钟 vs 降采样 23 秒（2026-08-28 第13章 ZugengPrinciple） |
 | C9 | 把 become 包进 play：`self.play(note.become(Text(...)))` | become 不进 play——封装成 `set_note` 助手直接瞬时换词（二维场景惯例）；要过渡动画才用 `note.animate.become(...)` | `become` 返回 mobject 本身而非 Animation，传进 play 报 `Unexpected argument VMobjectFromSVGPath passed to Scene.play()`（2026-08-31 附录 B 三场景初稿事故，render_check 抓获） |
+| C10 | `MathTex(r"\text{勾股定理}")` 里塞中文 | 中文一律用 `Text`（字体见 C1），公式里的中文标注用 `MathTex` 与 `Text` 分列组装，或 LaTeX 模板换 ctex | 默认 LaTeX 模板不含中文字形，报 Unicode error 或渲出豆腐块；纯文字本来就该用 Text（C4 的推论） |
 
 ## D. 工程习惯类
 
@@ -56,6 +57,7 @@
 | D1 | 一次性改多处再渲染 | 每次只改一处，`-ql` 快速验证 | 改三处出错时无法定位是哪一处 |
 | D2 | 长场景整段渲染调试 | `-n 0,3` 分段渲染 / 先 `-s` 看末帧 | 调试效率差 5 倍以上 |
 | D3 | 变量名 `c1`、`x2`、`arr` | 教学语义命名：`compare_color`、`sorted_bar` | 代码即教材，命名即讲解 |
+| D4 | 验证/预检脚本把临时渲染目录建到系统 temp（`tempfile.TemporaryDirectory()` 默认系统盘） | 临时目录建在工作区内：`tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".")`，用完即删 | Windows 上 MiKTeX 的 dvisvgm 在「Python 进程 cwd 与 dvi 文件不在同一盘符」时静默失败：退出码 −4、stderr 全空，manim 层只报「does not support converting .dvi files to SVG」，极易误导去查 dvisvgm 版本。实测矩阵：cwd 与目标同盘必成功、跨盘必失败（2026-09-02 render_check 自身翻车抓获——验收工具自己的临时目录踩坑，裁判先摔了一跤） |
 
 ---
 
