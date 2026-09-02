@@ -55,9 +55,9 @@
 | # | 错误写法 | 正确写法 | 原因 |
 |---|---|---|---|
 | D1 | 一次性改多处再渲染 | 每次只改一处，`-ql` 快速验证 | 改三处出错时无法定位是哪一处 |
-| D2 | 长场景整段渲染调试 | `-n 0,3` 分段渲染 / 先 `-s` 看末帧 | 调试效率差 5 倍以上 |
+| D2 | 长场景整段渲染调试 | `-n 0,3` 分段渲染 / 先 `-s` 看末帧 | 重复等待与问题无关的片段；节省幅度取决于场景 |
 | D3 | 变量名 `c1`、`x2`、`arr` | 教学语义命名：`compare_color`、`sorted_bar` | 代码即教材，命名即讲解 |
-| D4 | 验证/预检脚本把临时渲染目录建到系统 temp（`tempfile.TemporaryDirectory()` 默认系统盘） | 临时目录建在工作区内：`tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".")`，用完即删 | Windows 上 MiKTeX 的 dvisvgm 在「Python 进程 cwd 与 dvi 文件不在同一盘符」时静默失败：退出码 −4、stderr 全空，manim 层只报「does not support converting .dvi files to SVG」，极易误导去查 dvisvgm 版本。实测矩阵：cwd 与目标同盘必成功、跨盘必失败（2026-09-02 render_check 自身翻车抓获——验收工具自己的临时目录踩坑，裁判先摔了一跤） |
+| D4 | 验证/预检脚本把临时渲染目录建到系统 temp（`tempfile.TemporaryDirectory()` 默认系统盘） | 临时目录建在工作区内：`tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".")`，用完即删 | 一次本机事故中，工作区在 E 盘、系统 temp 在 C 盘时，MiKTeX 的 dvisvgm 静默返回 −4，manim 层只报 DVI 转 SVG 失败；这是该环境的复现记录，不外推为所有 Windows 机器的规律（2026-09-02 render_check 自身翻车抓获） |
 
 ---
 

@@ -44,9 +44,9 @@ class CircleRegions(Scene):
         circle.move_to(center)
         self.play(Create(circle), run_time=1.1)
 
-        r1 = Text("", font=FONT, font_size=26, color=C_TEXT).move_to(R1_POS)
-        r2 = Text("", font=FONT, font_size=26, color=C_TEXT).move_to(R2_POS)
-        r3 = Text("", font=FONT, font_size=26, color=C_TEXT).move_to(R3_POS)
+        r1 = Text("n = 1", font=FONT, font_size=26, color=C_TEXT).move_to(R1_POS)
+        r2 = Text("区域数 = 1", font=FONT, font_size=26, color=C_TEXT).move_to(R2_POS)
+        r3 = Text("先观察前几项", font=FONT, font_size=26, color=C_TEXT).move_to(R3_POS)
         self.add(r1, r2, r3)
 
         notes = {
@@ -59,7 +59,7 @@ class CircleRegions(Scene):
         }
         prev = None
         for n in range(1, 7):
-            # 角度加扰动：避免三线共点（保持"一般位置"）
+            # 这组固定点位已核验到 n=6；固定扰动本身不等于一般位置证明
             angs = [np.radians(i * 360 / n + i * 7) for i in range(n)]
             pts = [[center[0] + RAD * np.cos(a), center[1] + RAD * np.sin(a),
                     0] for a in angs]

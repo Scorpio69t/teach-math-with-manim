@@ -50,10 +50,10 @@ class DetAreaScene(Scene):
             stroke_color=GREEN, stroke_width=3,
             fill_color=GREEN, fill_opacity=0.25))
         readout = always_redraw(lambda: Text(
-            f"v = (0.5, {d_track.get_value():+.1f})\n"
-            f"det = 2×({d_track.get_value():+.1f}) − 0.5×0.5 "
-            f"= {2 * d_track.get_value() - 0.25:+.2f}\n"
-            f"面积 = {abs(2 * d_track.get_value() - 0.25):.2f}",
+            f"v = (0.5, {d_track.get_value():+.3f})\n"
+            f"det = 2×({d_track.get_value():+.3f}) − 0.5×0.5 "
+            f"= {2 * d_track.get_value() - 0.25:+.3f}\n"
+            f"面积 = {abs(2 * d_track.get_value() - 0.25):.3f}",
             font=FONT, font_size=22, color=C_TEXT,
             line_spacing=1.15).move_to(READOUT_POS))
         lab_v = always_redraw(lambda: Text(
@@ -68,7 +68,7 @@ class DetAreaScene(Scene):
         self.set_note("v 的纵坐标往下走——盯住面积读数")
         self.play(d_track.animate.set_value(0.125), run_time=3,
                   rate_func=linear)
-        self.set_note("det ≈ 0：两个向量几乎共线，面积快被压没了")
+        self.set_note("det = 0：两个向量共线，平行四边形面积为 0")
         self.wait(1.5)
 
         # ===== 穿过 0：方向翻转，det 变负 =====

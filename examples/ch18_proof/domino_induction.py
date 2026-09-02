@@ -72,7 +72,7 @@ class DominoInduction(Scene):
                        GRID0[1] + (j + 0.5) * CELL, 0])
             return s
 
-        gread = Text("", font=FONT, font_size=26, color=C_TEXT)
+        gread = Text("从 1 = 1² 开始", font=FONT, font_size=26, color=C_TEXT)
         gread.move_to(GREAD_POS)
         self.add(gread)
 

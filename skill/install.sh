@@ -6,7 +6,7 @@ set -e
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/manim-teaching" && pwd)"
 
-if [ -n "$1" ]; then
+if [ -n "${1:-}" ]; then
   mkdir -p "$1/manim-teaching"
   (cd "$SRC" && tar cf - --exclude='__pycache__' .) | tar xf - -C "$1/manim-teaching"
   echo "已安装到 $1/manim-teaching"

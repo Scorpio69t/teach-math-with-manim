@@ -124,7 +124,7 @@ class AreaFunction(Scene):
         self.set_note("A(x) 攒面积的速度（导数），恰好是 f 的高度")
         self.wait(1.8)
 
-        verdict = Text("面积函数的导数 = 原函数——微分与积分互为逆运算",
+        verdict = Text("连续函数下：面积函数的导数 = 被积函数",
                        font=FONT, font_size=28, weight=BOLD, color=GOLD)
         verdict.move_to([0, -3.0, 0])
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)

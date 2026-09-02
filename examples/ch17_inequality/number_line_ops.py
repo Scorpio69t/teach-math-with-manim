@@ -73,7 +73,8 @@ class NumberLineOps(Scene):
             return g
 
         ghosts = []
-        readout = Text("", font=FONT, font_size=24, color=C_TEXT)
+        readout = Text("准备操作：先看同加 3", font=FONT,
+                       font_size=24, color=C_TEXT)
         readout.move_to(READ_POS)
         self.add(readout)
 

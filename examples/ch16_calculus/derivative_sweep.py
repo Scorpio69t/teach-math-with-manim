@@ -120,7 +120,7 @@ class DerivativeSweep(Scene):
         self.remove(start_readout)  # 静态起始读数交棒给 always_redraw，防叠影
         self.add(tangent, move_dot, slope_dot, trace, readout)
         self.set_note("从左端出发：盯住左边切线的倾斜，看右边点的高度")
-        self.play(x_track.animate.set_value(-0.05), run_time=3.2,
+        self.play(x_track.animate.set_value(0.0), run_time=3.2,
                   rate_func=linear)
         self.set_note("顶点处切线水平——右边的高度恰好压到 0")
         self.wait(1.6)
@@ -136,7 +136,7 @@ class DerivativeSweep(Scene):
         self.set_note("右边的轨迹是一条直线——它就是 f 的导函数")
         self.wait(1.8)
 
-        verdict = Text("导数是一台斜率机器：输入 x，输出该点切线的斜率",
+        verdict = Text("在可导区间内：输入 x，导数输出该点切线斜率",
                        font=FONT, font_size=28, weight=BOLD, color=GOLD)
         verdict.move_to([0, -2.6, 0])
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)

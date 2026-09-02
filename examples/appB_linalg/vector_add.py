@@ -34,6 +34,7 @@ class VectorAddScene(Scene):
         self.play(FadeIn(self.note), FadeIn(readout))
 
         # ===== 两个向量登场：金 a、青 b =====
+        origin = plane.c2p(0, 0)
         tip_a, tip_b = plane.c2p(3, 1), plane.c2p(1, 2)
         vec_a = Arrow(plane.c2p(0, 0), tip_a, buff=0,
                       color=GOLD, stroke_width=6)
@@ -50,14 +51,15 @@ class VectorAddScene(Scene):
         # ===== b 平移到 a 的终点：虚线副本跟随，原 b 留在原地 =====
         self.set_note("把 b 平移到 a 的终点——方向和长度都不变")
         vec_b_copy = vec_b.copy().set_stroke(opacity=0.6)
-        dash_b = DashedLine(tip_a, tip_a + tip_b, color=TEAL)
-        self.play(vec_b_copy.animate.shift(tip_a), Create(dash_b),
+        shift_to_a = tip_a - origin
+        tip_sum = plane.c2p(4, 3)
+        dash_b = DashedLine(tip_a, tip_sum, color=TEAL)
+        self.play(vec_b_copy.animate.shift(shift_to_a), Create(dash_b),
                   run_time=1.6)
         self.wait(0.8)
 
         # ===== 对角线即答案：绿色 a + b =====
         self.set_note("从起点指向终点的那条对角线，就是 a + b")
-        tip_sum = tip_a + tip_b
         vec_sum = Arrow(plane.c2p(0, 0), tip_sum, buff=0,
                         color=GREEN, stroke_width=6)
         lab_sum = Text("a + b = (4, 3)", font=FONT, font_size=28,

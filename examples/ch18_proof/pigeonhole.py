@@ -46,7 +46,7 @@ class Pigeonhole(Scene):
                 sq.move_to([grid_c[0] + (i - 1) * CS,
                             grid_c[1] + (j - 1) * CS, 0])
                 cells.add(sq)
-        r1 = Text("", font=FONT, font_size=26, color=C_TEXT).move_to(R1_POS)
+        r1 = Text("已放 0 球 / 9 格", font=FONT, font_size=26, color=C_TEXT).move_to(R1_POS)
         self.add(r1)
         self.play(FadeIn(cells, lag_ratio=0.08), run_time=1.0)
         self.set_note("9 个格子是巢——球一个个落下")

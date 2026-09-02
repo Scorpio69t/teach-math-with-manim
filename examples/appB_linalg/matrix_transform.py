@@ -13,7 +13,7 @@ MATRIX = [[2, 1], [-1, 1]]  # 本案例的变换矩阵
 class MatrixTransformScene(Scene):
     """2x2 矩阵作用在整个坐标平面上：
     盯住金色 i 与青色 j 两个基向量落在哪里，
-    矩阵的四个数就是它们的落点坐标。"""
+    矩阵的两列就是它们在标准基下的像坐标。"""
 
     def set_note(self, msg):
         self.note.become(Text(msg, font=FONT, font_size=24,
@@ -55,11 +55,15 @@ class MatrixTransformScene(Scene):
 
         # ===== 整个平面被矩阵"揉"一遍 =====
         self.set_note("盯住 i 和 j——它们要搬家了")
-        moving = VGroup(plane, square, vec_i, vec_j, lab_i, lab_j)
-        self.play(ApplyMatrix(MATRIX, moving), run_time=3)
+        moving = VGroup(plane, square, vec_i, vec_j)
+        self.play(FadeOut(lab_i), FadeOut(lab_j),
+                  ApplyMatrix(MATRIX, moving), run_time=3)
+        lab_i.next_to(vec_i.get_end(), DOWN, buff=0.15)
+        lab_j.next_to(vec_j.get_end(), LEFT, buff=0.15)
+        self.play(FadeIn(lab_i), FadeIn(lab_j), run_time=0.5)
         self.wait(1)
 
-        # ===== 结案：矩阵的列就是基向量的落点 =====
+        # ===== 结案：矩阵的列是在标准基下的像坐标 =====
         self.set_note("i 落在 (2, -1)，j 落在 (1, 1)——正好是矩阵的两列")
         self.play(Indicate(vec_i, color=GOLD), Indicate(vec_j, color=TEAL),
                   run_time=1.5)
