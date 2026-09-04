@@ -50,6 +50,7 @@
 | C9 | 把 become 包进 play：`self.play(note.become(Text(...)))` | become 不进 play——封装成 `set_note` 助手直接瞬时换词（二维场景惯例）；要过渡动画才用 `note.animate.become(...)` | `become` 返回 mobject 本身而非 Animation，传进 play 报 `Unexpected argument VMobjectFromSVGPath passed to Scene.play()`（2026-08-31 附录 B 三场景初稿事故，render_check 抓获） |
 | C10 | `MathTex(r"\text{勾股定理}")` 里塞中文 | 中文一律用 `Text`（字体见 C1），公式里的中文标注用 `MathTex` 与 `Text` 分列组装，或 LaTeX 模板换 ctex | 默认 LaTeX 模板不含中文字形，报 Unicode error 或渲出豆腐块；纯文字本来就该用 Text（C4 的推论） |
 | C11 | 直接把 `index_labels(mobject)` 的默认结果当正式插图 | 用 `color=RED` 指定编号颜色，再以整个公式为纵向参照、对应零件中心为横向参照，把编号排到公式下方 | 默认编号是白色并位于各子对象中心，会与公式笔画重叠；第 5 章图 5-5 真机渲染复现（2026-09-05） |
+| C12 | 为了让多行公式等号对齐，只移动每行的等号子对象 | 比较锚点等号与当前等号的横坐标差，再用 `row.shift(shift_x * RIGHT)` 平移整行 | 单独移动等号会破坏 `MathTex` 内部间距，使等号与左右公式重叠；第 5 章图 5-6 真机渲染复现（2026-09-05） |
 
 ## D. 工程习惯类
 

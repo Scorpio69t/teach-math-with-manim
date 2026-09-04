@@ -18,9 +18,11 @@ class AlignedEquations(Scene):
         eq3 = MathTex(r"x^2 + \dfrac{b}{a}x", r"=", r"-\dfrac{c}{a}")
 
         rows = VGroup(eq1, eq2, eq3)
-        rows.arrange(DOWN, buff=0.7)          # 先纵向排开
-        for row in rows[1:]:                   # 再把每行的等号
-            row[1].align_to(rows[0][1], LEFT)  # 对齐到首行等号
+        rows.arrange(DOWN, buff=0.7)  # 先纵向排开
+        for row in rows[1:]:
+            # 计算等号左边缘的水平差，再平移整行，保留公式内部间距
+            shift_x = rows[0][1].get_left()[0] - row[1].get_left()[0]
+            row.shift(shift_x * RIGHT)
 
         rows.move_to(ORIGIN)
         self.play(Write(eq1))
