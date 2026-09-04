@@ -49,6 +49,7 @@
 | C8 | 三维曲面用默认分辨率批量造（如 12 个 Cylinder） | 显式降采样：`Cylinder(resolution=(2,16))` 等；提示词里永远写明 resolution | 默认网格极密，12 枚硬币默认 11 分钟 vs 降采样 23 秒（2026-08-28 第13章 ZugengPrinciple） |
 | C9 | 把 become 包进 play：`self.play(note.become(Text(...)))` | become 不进 play——封装成 `set_note` 助手直接瞬时换词（二维场景惯例）；要过渡动画才用 `note.animate.become(...)` | `become` 返回 mobject 本身而非 Animation，传进 play 报 `Unexpected argument VMobjectFromSVGPath passed to Scene.play()`（2026-08-31 附录 B 三场景初稿事故，render_check 抓获） |
 | C10 | `MathTex(r"\text{勾股定理}")` 里塞中文 | 中文一律用 `Text`（字体见 C1），公式里的中文标注用 `MathTex` 与 `Text` 分列组装，或 LaTeX 模板换 ctex | 默认 LaTeX 模板不含中文字形，报 Unicode error 或渲出豆腐块；纯文字本来就该用 Text（C4 的推论） |
+| C11 | 直接把 `index_labels(mobject)` 的默认结果当正式插图 | 用 `color=RED` 指定编号颜色，再以整个公式为纵向参照、对应零件中心为横向参照，把编号排到公式下方 | 默认编号是白色并位于各子对象中心，会与公式笔画重叠；第 5 章图 5-5 真机渲染复现（2026-09-05） |
 
 ## D. 工程习惯类
 

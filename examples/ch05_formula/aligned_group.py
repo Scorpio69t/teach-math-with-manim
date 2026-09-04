@@ -1,8 +1,8 @@
 """第 5 章 5.2 配套：公式组按等号对齐 + 零件编号演示。
 
 渲染：
-  manim -pqh aligned_group.py AlignedEquations   # 图 5-5
-  manim -pqh aligned_group.py IndexLabelsDemo    # 图 5-4
+  manim -pqh aligned_group.py IndexLabelsDemo    # 图 5-5
+  manim -pqh aligned_group.py AlignedEquations   # 图 5-6
 """
 
 from manim import *
@@ -34,7 +34,15 @@ class IndexLabelsDemo(Scene):
 
     def construct(self):
         eq = MathTex(r"ax^2", r"+", r"bx", r"+", r"c", r"=", r"0")
-        eq.scale(1.6)
-        labels = index_labels(eq, label_height=0.25)
+        eq.scale(1.6).shift(UP * 0.3)
+        labels = index_labels(
+            eq,
+            label_height=0.25,
+            color=RED,
+            background_stroke_width=2,
+        )
+        for label, part in zip(labels, eq):
+            label.next_to(eq, DOWN, buff=0.28)
+            label.set_x(part.get_center()[0])
         self.add(eq, labels)
         self.wait()
