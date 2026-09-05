@@ -47,7 +47,7 @@ class ParaboloidSlices(ThreeDScene):
 
     def construct(self):
         title = Text("切片升起来，碗就长出来了", font=FONT,
-                     font_size=32, weight=BOLD, color=C_TEXT)
+                     font_size=28, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = Text("旋转抛物面 z = x² + y²", font=FONT,
                          font_size=26, color=C_TEXT)
