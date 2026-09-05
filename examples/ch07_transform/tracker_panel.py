@@ -3,6 +3,7 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.2
+BAR_LEFT = LEFT * 3.5 + DOWN * 0.2
 
 
 class TrackerPanel(Scene):
@@ -30,19 +31,26 @@ class TrackerPanel(Scene):
         number.move_to(UP * 1.6)
         number.add_updater(lambda d: d.set_value(tracker.get_value()))
 
-        # 仪表二：进度条，宽度跟着数值走
+        # 仪表二：进度条，固定左端，宽度跟着数值走
+        track = Rectangle(width=7, height=0.6, color=GREY_B,
+                          stroke_width=2, fill_opacity=0.12)
+        track.move_to(BAR_LEFT, aligned_edge=LEFT)
         bar = Rectangle(width=tracker.get_value() * 2, height=0.6,
                         color=BLUE, fill_opacity=0.8)
-        bar.move_to(DOWN * 0.2, aligned_edge=LEFT)
+        bar.move_to(BAR_LEFT, aligned_edge=LEFT)
         bar.add_updater(
-            lambda b: b.stretch_to_fit_width(tracker.get_value() * 2)
+            lambda b: b.stretch_to_fit_width(
+                tracker.get_value() * 2, about_edge=LEFT
+            )
         )
 
-        self.add(number, bar)
+        self.add(number, track, bar)
         self.set_note("tracker 从 1 渐变到 3.5——两块仪表同步跟随")
-        self.play(tracker.animate.set_value(3.5), run_time=3)
+        self.play(tracker.animate.set_value(3.5), run_time=3,
+                  rate_func=linear)
         self.wait(1)
 
         self.set_note("再收回到 0.5——同一个遥控器，全程只需一句话")
-        self.play(tracker.animate.set_value(0.5), run_time=2.5)
+        self.play(tracker.animate.set_value(0.5), run_time=2.5,
+                  rate_func=linear)
         self.wait(1.5)

@@ -47,6 +47,13 @@ class TransformFamily(Scene):
         # 清场不退场：前两幕演员缩小置顶，三种语义留在台上对照
         self.play(sq.animate.scale(0.5).move_to(RIGHT * 3 + UP * 2.2),
                   star.animate.scale(0.5).move_to(LEFT * 3 + UP * 2.2))
+        transform_tag = Text("Transform", font=FONT, font_size=20,
+                             color=GREY_B)
+        transform_tag.next_to(sq, DOWN, buff=0.18)
+        replacement_tag = Text("ReplacementTransform", font=FONT,
+                               font_size=20, color=GREY_B)
+        replacement_tag.next_to(star, DOWN, buff=0.18)
+        self.play(FadeIn(transform_tag), FadeIn(replacement_tag), run_time=0.8)
 
         # ── 第三幕：TransformFromCopy —— 复制变身，原件留档 ──
         card = RoundedRectangle(width=3, height=1.2, corner_radius=0.15,

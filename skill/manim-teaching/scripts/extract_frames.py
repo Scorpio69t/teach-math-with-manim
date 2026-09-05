@@ -34,19 +34,32 @@ def grab(video, times, outdir):
     return 0
 
 
-def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+def parse_args(argv):
+    """拆分位置参数与 -o，避免把输出目录误当成抽帧秒数。"""
+    args = list(argv)
     outdir = None
-    if "-o" in sys.argv:
-        i = sys.argv.index("-o")
-        outdir = sys.argv[i + 1]
+    if "-o" in args:
+        i = args.index("-o")
+        if i + 1 >= len(args):
+            raise ValueError("-o 后必须提供输出目录")
+        outdir = Path(args[i + 1])
+        del args[i:i + 2]
     if len(args) < 2:
-        print("用法：python extract_frames.py <video.mp4> <秒1> [秒2 ...] [-o 目录]")
-        return 2
+        raise ValueError("至少需要视频路径和一个抽帧秒数")
     video = Path(args[0])
     times = [float(a) for a in args[1:]]
     if outdir is None:
         outdir = video.parent / "frames"
+    return video, times, outdir
+
+
+def main():
+    try:
+        video, times, outdir = parse_args(sys.argv[1:])
+    except (ValueError, IndexError) as exc:
+        print("用法：python extract_frames.py <video.mp4> <秒1> [秒2 ...] [-o 目录]")
+        print(f"参数错误：{exc}")
+        return 2
     return grab(video, times, outdir)
 
 
