@@ -147,6 +147,7 @@ class CircleToWave(Scene):
 
         marks = [(PI / 2, "到达最高点：sin θ = 1", 1.2),
                  (PI, "回到水平线：sin θ = 0", 1.2),
+                 (PI + 0.24, "进入第三象限：sin θ < 0", 0.8),
                  (3 * PI / 2, "沉入谷底：sin θ = −1", 1.2),
                  (2 * PI - 0.001, "走完一整圈：波也画完一整条", 0.8)]
         for target, msg, hold in marks:
