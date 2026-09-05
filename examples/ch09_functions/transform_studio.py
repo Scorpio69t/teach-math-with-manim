@@ -3,6 +3,18 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+PLOT_Y_MIN = -4.0         # 曲线安全区：给上下方标题、注释条留出净空
+PLOT_Y_MAX = 5.0
+PLOT_X_HALF = 2.4
+
+
+def visible_half_width(a_value, k_value):
+    """计算抛物线在安全纵向范围内可见的横向半宽。"""
+    if abs(a_value) < 0.05:
+        return PLOT_X_HALF
+    vertical_room = (PLOT_Y_MAX - k_value if a_value > 0
+                     else k_value - PLOT_Y_MIN)
+    return min(np.sqrt(max(vertical_room / abs(a_value), 0)), PLOT_X_HALF)
 
 
 class TransformStudio(Scene):
@@ -11,6 +23,16 @@ class TransformStudio(Scene):
     def set_note(self, msg):
         self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
                          .move_to(NOTE_POS))
+
+    def make_live_curve(self, axes, a, h, k):
+        a_value = a.get_value()
+        h_value = h.get_value()
+        k_value = k.get_value()
+        half_width = visible_half_width(a_value, k_value)
+        return axes.plot(
+            lambda x: a_value * (x - h_value)**2 + k_value,
+            x_range=[h_value - half_width, h_value + half_width],
+            color=GOLD, stroke_width=4)
 
     def construct(self):
         title = Text("y = a(x − h)² + k：三个滑杆", font=FONT,
@@ -29,13 +51,12 @@ class TransformStudio(Scene):
         self.play(Create(axes), run_time=1.2)
 
         # 参照系：y = x² 灰影常驻，变换前后对比全靠它
-        ghost = axes.plot(lambda x: x**2, x_range=[-2.4, 2.4],
+        ghost_half_width = np.sqrt(PLOT_Y_MAX)
+        ghost = axes.plot(lambda x: x**2,
+                          x_range=[-ghost_half_width, ghost_half_width],
                           color=GREY_B, stroke_width=2)
         a, h, k = ValueTracker(1), ValueTracker(0), ValueTracker(0)
-        live = always_redraw(lambda: axes.plot(
-            lambda x: a.get_value() * (x - h.get_value())**2 + k.get_value(),
-            x_range=[h.get_value() - 2.4, h.get_value() + 2.4],
-            color=GOLD, stroke_width=4))
+        live = always_redraw(lambda: self.make_live_curve(axes, a, h, k))
         # 顶点：抛物线的"心脏"，坐标 (h, k) 实时可读
         vertex = always_redraw(lambda: Dot(
             axes.c2p(h.get_value(), k.get_value()), color=RED, radius=0.09))

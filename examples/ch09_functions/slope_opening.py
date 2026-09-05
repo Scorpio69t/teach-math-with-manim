@@ -3,6 +3,7 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+LINE_Y_LIMIT = 4.6        # 比坐标轴顶底各收进一点，给标题和注释条留白
 
 
 class SlopeAndOpening(Scene):
@@ -25,6 +26,14 @@ class SlopeAndOpening(Scene):
                  font_size=36, color=GOLD).to_corner(UR, buff=0.6)))
         return lab, num
 
+    def make_visible_line(self, axes, tracker):
+        """只画坐标轴视窗内的直线，避免陡直线穿进标题和注释条。"""
+        k_value = tracker.get_value()
+        half_width = min(LINE_Y_LIMIT / max(abs(k_value), 0.1), 5)
+        return axes.plot(lambda x: k_value * x,
+                         x_range=[-half_width, half_width],
+                         color=TEAL, stroke_width=4)
+
     def construct(self):
         title = Text("斜率与开口：参数的性格", font=FONT, font_size=32,
                      weight=BOLD, color=C_TEXT)
@@ -42,9 +51,7 @@ class SlopeAndOpening(Scene):
 
         # 第一幕：直线 y = kx，k 是遥控器
         k = ValueTracker(1)
-        line = always_redraw(lambda: axes.plot(
-            lambda x: k.get_value() * x, x_range=[-5, 5],
-            color=TEAL, stroke_width=4))
+        line = always_redraw(lambda: self.make_visible_line(axes, k))
         # 斜率三角：横走 1 竖走 k——"斜率"两个字的几何身份证
         tri = always_redraw(lambda: VGroup(
             DashedLine(axes.c2p(1, k.get_value()), axes.c2p(2, k.get_value()),
