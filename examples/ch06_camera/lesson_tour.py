@@ -2,7 +2,7 @@
 """第 6 章 代码清单 6-3：一节课的运镜脚本（lesson_tour.py）
 
 三角形内角和微课：一区对象、一区证明、一区结论，镜头巡游，HUD 钉屏。
-渲染：manim -pql examples/ch06_camera/lesson_tour.py LessonTour
+渲染：manim -pqh examples/ch06_camera/lesson_tour.py LessonTour
 """
 from manim import *
 
@@ -102,11 +102,11 @@ class LessonTour(MovingCameraScene):
         self.play(LaggedStart(*moves, lag_ratio=0.3), run_time=2.5)
         self.wait(0.8)
 
-        # ── 镜 3：半圆显现 ──
-        half = Arc(radius=1.9, start_angle=0, angle=PI,
-                   arc_center=center, color=WHITE, stroke_width=3)
-        self.play(Create(half), run_time=1.2)
-        self.set_note("弧弧相接，严丝合缝——这是一个半圆")
+        # ── 镜 3：直径显现，确认彩色角弧组成半圆 ──
+        diameter = Line(center + LEFT * 1.4, center + RIGHT * 1.4,
+                        color=WHITE, stroke_width=3)
+        self.play(Create(diameter), run_time=1.2)
+        self.set_note("弧弧相接，首尾落在同一直径上——这是一个半圆")
         self.wait(1.5)
 
         # ── 镜 4：拉远全景，结论浮现 ──

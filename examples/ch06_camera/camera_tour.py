@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """第 6 章 代码清单 6-1：运镜三式巡游（camera_tour.py）
 
-渲染：manim -pql examples/ch06_camera/camera_tour.py CameraTour
+渲染：manim -pqh examples/ch06_camera/camera_tour.py CameraTour
 """
 from manim import *
 

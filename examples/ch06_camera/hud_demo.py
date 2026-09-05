@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """第 6 章 代码清单 6-2：钉屏 HUD 演示（hud_demo.py）
 
-渲染：manim -pql examples/ch06_camera/hud_demo.py HudDemo
+渲染：manim -pqh examples/ch06_camera/hud_demo.py HudDemo
 """
 from manim import *
 
 FONT = "Microsoft YaHei"
 C_TEXT = "#EDEDED"
+WORLD_SPACING = 10
 
 
 def pin_to_screen(camera, mob, place, buff=0.5):
@@ -54,19 +55,25 @@ class HudDemo(MovingCameraScene):
         pin_to_screen(self.camera, self.note, "BOTTOM", buff=0.4)
         self.add(title, self.note)
 
-        # 世界：三块内容一字排开，间隔两个屏幕宽
+        # 世界：三块内容一字排开；相邻两块在平移中途仍能完整同框
+        world_positions = [
+            RIGHT * (i * WORLD_SPACING - WORLD_SPACING) for i in range(3)
+        ]
         for i, (txt, color) in enumerate([("是什么", BLUE),
                                           ("怎么证", GOLD),
                                           ("有什么用", GREEN)]):
             block = Text(txt, font=FONT, font_size=60, color=color)
-            block.move_to(RIGHT * (i * 14 - 14))
+            block.move_to(world_positions[i])
             self.add(block)
 
-        # 镜头巡游：每站先运镜、再换注释、后停留
+        # 幕后布机位：第一帧就让“第一讲”的字幕与“是什么”对应
+        frame.move_to(world_positions[0])
+        self.wait(1.5)
+
+        # 镜头巡游：从第二站起，先运镜、再换注释、后停留
         nums = "一二三"
         topics = ["它说了什么", "怎么证明", "能干什么"]
-        for i in range(3):
-            self.play(frame.animate.move_to(RIGHT * (i * 14 - 14)),
-                      run_time=1.8)
+        for i in range(1, 3):
+            self.play(frame.animate.move_to(world_positions[i]), run_time=1.8)
             self.set_note(f"第{nums[i]}讲：{topics[i]}")
             self.wait(1.5)
