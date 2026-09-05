@@ -1,7 +1,7 @@
 """第 5 章 5.3 配套：TransformMatchingTex 移项变形。
 
 渲染：
-  manim -pqh matching_transform.py MoveTermTransform   # 图 5-6
+  manim -pqh matching_transform.py MoveTermTransform   # 图 5-7
 """
 
 from manim import *
@@ -13,9 +13,10 @@ class MoveTermTransform(Scene):
     """等式两边同时减去 c/a：相同零件滑动，消掉的淡出，新增的淡入。"""
 
     def construct(self):
-        before = MathTex(r"ax^2", r"+", r"bx", r"+", r"\dfrac{c}{a}",
+        before = MathTex(r"x^2", r"+", r"\dfrac{b}{a}x", r"+", r"\dfrac{c}{a}",
                          r"=", r"0")
-        after = MathTex(r"ax^2", r"+", r"bx", r"=", r"-", r"\dfrac{c}{a}")
+        after = MathTex(r"x^2", r"+", r"\dfrac{b}{a}x", r"=", r"-",
+                        r"\dfrac{c}{a}")
 
         caption = Text("两边同时减去 c/a", font=FONT, font_size=28,
                        color=GOLD)
@@ -24,5 +25,6 @@ class MoveTermTransform(Scene):
         self.play(Write(before))
         self.wait(0.8)
         self.play(Write(caption))
+        self.wait(0.6)
         self.play(TransformMatchingTex(before, after), run_time=2)
         self.wait()

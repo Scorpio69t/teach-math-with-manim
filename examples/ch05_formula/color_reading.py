@@ -1,7 +1,7 @@
 """第 5 章 5.4 配套：教鞭式带读——指示器逐项高亮。
 
 渲染：
-  manim -pqh color_reading.py GuidedReading   # 图 5-7
+  manim -pqh color_reading.py GuidedReading       # 图 5-8
 """
 
 from manim import *
@@ -10,7 +10,7 @@ from manim import *
 class GuidedReading(Scene):
     """教鞭式带读：下划线滑到某项下方，该项亮起，读完保留痕迹。"""
 
-    TERMS = [r"x^2", r"-", r"5x", r"+", r"6", r"=", r"0"]
+    TERMS = [r"x^2", r"-5x", r"+6", r"=", r"0"]
 
     def construct(self):
         eq = MathTex(*self.TERMS)

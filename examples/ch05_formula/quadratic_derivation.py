@@ -1,7 +1,7 @@
 """第 5 章 5.6 案例：配方法推导一元二次方程求根公式（七步链式变形）。
 
 渲染：
-  manim -pqh quadratic_derivation.py QuadraticDerivation   # 图 5-8
+  manim -pqh quadratic_derivation.py QuadraticDerivation   # 图 5-9
 """
 
 from manim import *
