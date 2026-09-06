@@ -76,15 +76,21 @@ class LinePlanePerp(ThreeDScene):
                          about_point=ORIGIN),
                   Rotate(tip, 35 * DEGREES, axis=RIGHT,
                          about_point=ORIGIN),
+                  Rotate(sq1, 35 * DEGREES, axis=RIGHT,
+                         about_point=ORIGIN),
                   run_time=1.8)
         self.play(Rotate(pole, -70 * DEGREES, axis=RIGHT,
                          about_point=ORIGIN),
                   Rotate(tip, -70 * DEGREES, axis=RIGHT,
                          about_point=ORIGIN),
+                  Rotate(sq1, -70 * DEGREES, axis=RIGHT,
+                         about_point=ORIGIN),
                   run_time=2.2)
         self.play(Rotate(pole, 35 * DEGREES, axis=RIGHT,
                          about_point=ORIGIN),
                   Rotate(tip, 35 * DEGREES, axis=RIGHT,
+                         about_point=ORIGIN),
+                  Rotate(sq1, 35 * DEGREES, axis=RIGHT,
                          about_point=ORIGIN),
                   run_time=1.8)
         self.wait(1.2)

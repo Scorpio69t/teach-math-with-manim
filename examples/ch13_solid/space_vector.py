@@ -40,30 +40,29 @@ class SpaceVector(ThreeDScene):
         self.wait(0.6)
 
         # ===== 三次位移合成 =====
-        p = np.array([PX, PY, PZ])
-        axes_c = axes.get_origin() if hasattr(axes, "get_origin") \
-            else axes.coords_to_point(0, 0, 0)
         o = axes.coords_to_point(0, 0, 0)
         p3 = axes.coords_to_point(PX, PY, PZ)
         pxy = axes.coords_to_point(PX, PY, 0)
 
         self.set_note("先沿 x 轴走 2 步（红）")
         step_x = Arrow3D(o, axes.coords_to_point(PX, 0, 0),
-                         color=RED, thickness=0.02)
+                         color=RED, thickness=0.02, resolution=12)
         self.play(FadeIn(step_x), run_time=1.0)
         self.set_note("再沿 y 方向走 1.2 步（青）")
         step_y = Arrow3D(axes.coords_to_point(PX, 0, 0), pxy,
-                         color=TEAL, thickness=0.02)
+                         color=TEAL, thickness=0.02, resolution=12)
         self.play(FadeIn(step_y), run_time=1.0)
         self.set_note("最后竖直爬 2 步（蓝）——到达 P")
-        step_z = Arrow3D(pxy, p3, color=BLUE, thickness=0.02)
+        step_z = Arrow3D(pxy, p3, color=BLUE, thickness=0.02,
+                         resolution=12)
         self.play(FadeIn(step_z), run_time=1.0)
         dot_p = Dot(p3, color=GOLD, radius=0.09)
         self.play(FadeIn(dot_p, scale=0.4), run_time=0.6)
         self.wait(1.2)
 
         self.set_note("三支位移首尾相接，合成一支：位置向量 OP")
-        vec = Arrow3D(o, p3, color=GOLD, thickness=0.035)
+        vec = Arrow3D(o, p3, color=GOLD, thickness=0.035,
+                      resolution=12)
         self.play(FadeIn(vec, scale=0.6), run_time=1.0)
         self.wait(1.0)
         self.set_note("OP = (2, 1.2, 2)——坐标就是三次位移的账单")
@@ -78,32 +77,23 @@ class SpaceVector(ThreeDScene):
         for m in (step_x, step_y, step_z, vec, dot_p, drop):
             self.play(FadeOut(m), run_time=0.5)
         self.set_note("换个主角：平面的方向，谁来描述？")
-        tilt = ValueTracker(0.0)
-
-        def plane_now():
-            sq = Square(side_length=3.2, fill_color=TEAL,
-                        fill_opacity=0.35, stroke_color=TEAL,
-                        stroke_width=2)
-            sq.rotate(tilt.get_value(), axis=RIGHT)
-            sq.shift([1.2, 0.6, 1.2])
-            return sq
-
-        def normal_now():
-            n = np.array([0, -np.sin(tilt.get_value()),
-                          np.cos(tilt.get_value())])
-            base = np.array([1.2, 0.6, 1.2])
-            return Arrow3D(base, base + 1.6 * n, color=GOLD,
-                           thickness=0.03)
-
-        plane_m = always_redraw(plane_now)
-        normal_m = always_redraw(normal_now)
-        self.play(FadeIn(plane_m), FadeIn(normal_m), run_time=1.0)
+        base = np.array([1.2, 0.6, 1.2])
+        plane_m = Square(side_length=3.2, fill_color=TEAL,
+                         fill_opacity=0.35, stroke_color=TEAL,
+                         stroke_width=2).shift(base)
+        normal_m = Arrow3D(base, base + 1.6 * OUT, color=GOLD,
+                           thickness=0.03, resolution=12)
+        plane_and_normal = VGroup(plane_m, normal_m)
+        self.play(FadeIn(plane_and_normal), run_time=1.0)
         self.wait(1.0)
         self.set_note("金色箭头是法向量：垂直于平面，管它的朝向")
-        self.play(tilt.animate.set_value(40 * DEGREES), run_time=2.4)
+        self.play(Rotate(plane_and_normal, 40 * DEGREES, axis=RIGHT,
+                         about_point=base), run_time=2.4)
         self.set_note("法向量往哪边倒，平面就往哪边躺")
-        self.play(tilt.animate.set_value(-25 * DEGREES), run_time=2.4)
-        self.play(tilt.animate.set_value(15 * DEGREES), run_time=1.6)
+        self.play(Rotate(plane_and_normal, -65 * DEGREES, axis=RIGHT,
+                         about_point=base), run_time=2.4)
+        self.play(Rotate(plane_and_normal, 40 * DEGREES, axis=RIGHT,
+                         about_point=base), run_time=1.6)
         self.wait(1.2)
         self.set_note("证垂直、算夹角、求距离——都翻译成向量的运算")
         self.wait(2.4)

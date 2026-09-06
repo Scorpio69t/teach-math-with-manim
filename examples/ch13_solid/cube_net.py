@@ -78,6 +78,7 @@ class CubeNet(ThreeDScene):
         # ===== 展开图特写 =====
         self.set_note("摊平了：这就是展开图——一条四连面，左右各一臂")
         self.move_camera(phi=8 * DEGREES, theta=-90 * DEGREES,
+                         zoom=0.72, frame_center=[0, 0.7, 0],
                          run_time=2.4)   # 转到正上方俯视
         self.wait(1.6)
         self.set_note("正方体的展开图共有 11 种，这是最常见的十字形")
@@ -87,6 +88,7 @@ class CubeNet(ThreeDScene):
 
         # ===== 叠盒子 =====
         self.move_camera(phi=68 * DEGREES, theta=-60 * DEGREES,
+                         zoom=1.0, frame_center=ORIGIN,
                          run_time=2.2)
         self.set_note("原路折回去：先立顶面")
         self.play(Rotate(top, PI / 2, axis=RIGHT,
