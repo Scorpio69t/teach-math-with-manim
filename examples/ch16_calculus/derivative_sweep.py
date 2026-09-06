@@ -10,6 +10,7 @@ C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.5        # 注释条固定锚点
 READOUT_POS = [3.3, 2.65, 0]  # 读数行锚点（右板上方）
 X0 = 1.6                     # 复盘割线逼近的考察点
+TANGENT_TOP = 2.9            # 动态切线的上边界，给章标题留出安全区
 
 
 def f(x):
@@ -42,7 +43,10 @@ class DerivativeSweep(Scene):
         sy = lax.y_length / (lax.y_range[1] - lax.y_range[0])
         d = np.array([sx, (x / 2) * sy, 0])
         d = d / np.linalg.norm(d)
-        return Line(P - d * 1.3, P + d * 1.3, color=color, stroke_width=4)
+        vertical_room = TANGENT_TOP - P[1]
+        half = min(1.3, vertical_room / max(abs(d[1]), 1e-6))
+        return Line(P - d * half, P + d * half,
+                    color=color, stroke_width=4)
 
     def construct(self):
         title = Text("每一点的切线斜率，收集起来是什么？", font=FONT,
@@ -63,7 +67,7 @@ class DerivativeSweep(Scene):
         curve = self.lax.plot(f, x_range=[-3.2, 3.2], color=TEAL,
                               stroke_width=4)
         f_lab = Text("y = x²/4", font=FONT, font_size=24, color=TEAL)
-        f_lab.move_to([-5.5, 2.85, 0])
+        f_lab.move_to([-5.5, -0.45, 0])
         self.play(Create(self.lax), run_time=1.0)
         self.play(Create(curve), FadeIn(f_lab), run_time=1.4)
         self.set_note("老规矩：先在一个点上把割线逼成切线")
