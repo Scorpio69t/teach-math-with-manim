@@ -56,7 +56,7 @@ class ComplexSpiral(Scene):
                       max_tip_length_to_length_ratio=0.15)
         d0 = Dot(self.screen(z), radius=0.07, color=GOLD)
         lab0 = Text("z0 = 1", font=FONT, font_size=22, color=GOLD)
-        lab0.move_to(self.screen(z) + [-0.85, -0.35, 0])
+        lab0.next_to(d0, DOWN, buff=0.18)
         self.play(GrowArrow(arrow), FadeIn(d0), FadeIn(lab0), run_time=0.9)
         self.set_note("盯住箭头：下一步会发生什么？")
         self.wait(1.4)

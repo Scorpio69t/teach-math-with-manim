@@ -80,6 +80,8 @@ class UnitRoots(Scene):
             if m == N:
                 self.set_note("5 × 72° = 360°——正好一整圈，砸回 1！")
                 self.wait(1.8)
+            if m < N:
+                self.wait(0.8)
 
         self.wait(0.8)
 
