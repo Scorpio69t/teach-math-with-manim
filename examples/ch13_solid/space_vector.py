@@ -74,15 +74,16 @@ class SpaceVector(ThreeDScene):
         self.wait(2.2)
 
         # ===== 法向量是平面的方向盘 =====
-        for m in (step_x, step_y, step_z, vec, dot_p, drop):
-            self.play(FadeOut(m), run_time=0.5)
+        self.play(*[FadeOut(m) for m in
+                    (step_x, step_y, step_z, vec, dot_p, drop)],
+                  run_time=0.8)
         self.set_note("换个主角：平面的方向，谁来描述？")
         base = np.array([1.2, 0.6, 1.2])
         plane_m = Square(side_length=3.2, fill_color=TEAL,
                          fill_opacity=0.35, stroke_color=TEAL,
                          stroke_width=2).shift(base)
         normal_m = Arrow3D(base, base + 1.6 * OUT, color=GOLD,
-                           thickness=0.03, resolution=12)
+                           thickness=0.03, resolution=8)
         plane_and_normal = VGroup(plane_m, normal_m)
         self.play(FadeIn(plane_and_normal), run_time=1.0)
         self.wait(1.0)
