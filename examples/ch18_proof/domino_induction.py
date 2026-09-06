@@ -99,6 +99,8 @@ class DominoInduction(Scene):
             self.wait(1.3)
             self.play(new_cells.animate.set_color(GOLD), run_time=0.5)
             squares.add(new_cells)
+        gread.become(Text("1+3+5+7 = 4²（+7 格）", font=FONT,
+                          font_size=26, color=C_TEXT).move_to(GREAD_POS))
         self.set_note("每一圈 L 形都是奇数格——传递步在方格上肉眼可见")
         self.wait(2.0)
 
