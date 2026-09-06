@@ -9,8 +9,8 @@ ROWS = 6          # 钉板层数
 N_BALLS = 40      # 落球总数
 DX, DY = 0.92, 0.62
 TOP = 1.9         # 顶层钉高度
-BIN_Y = TOP - ROWS * DY - 0.68   # 槽底高度（球堆可长高，漫到钉区属正常）
-BAR_H = 0.13      # 每个球贡献的柱高
+BIN_Y = TOP - ROWS * DY - 0.68   # 槽底高度（与最下一排钉子留出间隔）
+BAR_H = 0.09      # 每个球贡献的柱高（最高柱不侵入钉子区）
 
 
 class GaltonBoard(Scene):

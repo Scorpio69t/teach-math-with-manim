@@ -11,7 +11,7 @@ def coin(label, color, radius=0.26):
                stroke_color=WHITE, stroke_width=2)
     t = Text(label, font=FONT, font_size=22, color=BLACK)
     t.move_to(c.get_center())
-    return VGroup(c, t)
+    return VGroup(c, t).set_z_index(2)
 
 
 class CoinTree(Scene):
@@ -49,7 +49,7 @@ class CoinTree(Scene):
             ("反", "反"): np.array([-0.4, -1.3, 0]),
         }
 
-        root = Dot(root_pos, color=GOLD, radius=0.09)
+        root = Dot(root_pos, color=GOLD, radius=0.09).set_z_index(2)
         self.play(FadeIn(root, scale=0.5), run_time=0.5)
 
         self.set_note("第一层：第一枚硬币，正或反")
@@ -86,14 +86,14 @@ class CoinTree(Scene):
         paths = VGroup()
         for key in (("正", "反"), ("反", "正")):
             seg = VGroup(edges1[key[0]].copy().set_color(GOLD)
-                         .set_stroke(width=6),
+                         .set_stroke(width=6).set_z_index(1),
                          edges2[key].copy().set_color(GOLD)
-                         .set_stroke(width=6))
+                         .set_stroke(width=6).set_z_index(1))
             paths.add(seg)
         self.play(FadeIn(paths), run_time=1.0)
         self.wait(1.2)
-        self.play(Indicate(coins2[("正", "反")], color=GOLD),
-                  Indicate(coins2[("反", "正")], color=GOLD),
+        self.play(Circumscribe(coins2[("正", "反")], color=GOLD),
+                  Circumscribe(coins2[("反", "正")], color=GOLD),
                   run_time=1.2)
         panel2 = Text("一正一反 = 2/4 = 1/2", font=FONT, font_size=28,
                       weight=BOLD, color=GOLD)

@@ -86,7 +86,7 @@ class LawOfLargeNumbers(Scene):
         traces = []
         for (ns, fq), col in zip(series, colors):
             def make(ns=ns, fq=fq, col=col):   # col 也要快照，否则三条同色
-                idx = max(int(t.get_value()), 2)   # 至少两个点才能成折线
+                idx = min(max(int(t.get_value()), 2), len(ns))
                 pts = [np.array([sx(ns[i]), sy(fq[i]), 0])
                        for i in range(idx)]
                 m = VMobject(color=col, stroke_width=2.5)
@@ -128,12 +128,15 @@ class LawOfLargeNumbers(Scene):
         self.set_note("10 次里 7 次正面太正常了：小样本什么都敢发生")
         self.play(t.animate.set_value(120), run_time=2.6,
                   rate_func=linear)
-        self.set_note("1000 次以后：震荡明显收窄")
+        self.set_note("试验次数继续增加，震荡范围逐渐收窄")
         self.play(t.animate.set_value(int(n_pts * 0.75)),
                   run_time=3.0, rate_func=linear)
-        self.set_note("10000 次：三条轨迹都贴上了 1/2")
-        self.play(t.animate.set_value(n_pts - 1), run_time=3.0,
+        self.set_note("1000 次以后：震荡明显收窄")
+        self.wait(1.2)
+        self.set_note("继续推进到 10000 次")
+        self.play(t.animate.set_value(n_pts), run_time=3.0,
                   rate_func=linear)
+        self.set_note("10000 次：三条轨迹都贴近 1/2")
         self.wait(1.6)
 
         # ===== 结案 =====
