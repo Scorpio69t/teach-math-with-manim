@@ -9,6 +9,7 @@ FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
 READ_POS = [4.7, 2.4, 0]     # 读数锚点
+TRANSFER_POS = [3.8, 2.4, 0] # 传递性短式单独居中，避开右边界
 VERDICT_POS = [0, -2.75, 0]
 
 A0, B0, C0 = 2, -1, 4        # 三个演示数：a > b，c 用于传递性
@@ -120,18 +121,18 @@ class NumberLineOps(Scene):
         self.wait(2.6)
 
         # ===== 传递性：排队 =====
+        self.play(FadeOut(stmt), run_time=0.4)
         c_dot = Dot(line.n2p(C0), radius=0.09, color=TEAL)
         c_lab = Text(f"c = {C0}", font=FONT, font_size=24, color=TEAL)
         c_lab.next_to(c_dot, DOWN, buff=0.25)
         self.play(FadeIn(c_dot), FadeIn(c_lab), run_time=0.8)
-        readout.become(Text("c 在 a 右，a 在 b 右 → c 在 b 右",
+        readout.become(Text("c > a > b → c > b",
                             font=FONT, font_size=24, color=TEAL)
-                       .move_to(READ_POS))
+                       .move_to(TRANSFER_POS))
         self.set_note("传递性就是排队：右者的右者，必在更右")
         self.wait(2.2)
 
         # ===== 结案 =====
-        self.play(FadeOut(stmt), run_time=0.5)
         verdict = Text("加减乘正，顺序不动；乘负掉头；传递性就是排队",
                        font=FONT, font_size=28, weight=BOLD, color=GOLD)
         verdict.move_to(VERDICT_POS)

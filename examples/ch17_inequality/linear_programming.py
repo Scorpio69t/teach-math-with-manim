@@ -66,11 +66,11 @@ class LinearProgramming(Scene):
         c_track = ValueTracker(0.0)
 
         def obj_line():
-            c = c_track.get_value()
-            p1 = axes.c2p(0, c)          # 与 y 轴交点
-            p2 = axes.c2p(c / 2, 0)      # 与 x 轴交点
-            mid = (p1 + p2) / 2
-            return Line(mid + (p2 - p1) * 1.1, mid + (p1 - p2) * 1.1,
+            c_draw = max(c_track.get_value(), 0.05)
+            x_left = max(0.0, (c_draw - 5.0) / 2)
+            x_right = min(5.0, c_draw / 2)
+            return Line(axes.c2p(x_left, c_draw - 2 * x_left),
+                        axes.c2p(x_right, c_draw - 2 * x_right),
                         color=RED, stroke_width=4)
 
         line = always_redraw(obj_line)
