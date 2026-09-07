@@ -15,6 +15,21 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 
 
+def visible_x_span(a, b, c, top=4.5):
+    """抛物线封顶在 y=top 时的可见 x 区间（防曲线越轴冲出画面）。
+
+    Axes.plot 不会自动裁剪：按全定义域画 y = 2x^2 会冲出坐标系
+    顶端直抵画幅上缘。与上边界解出两根，根之间的部分才是
+    落在坐标系内的可见段；开区间再收进画面宽 [-3, 3]。
+    """
+    disc = b * b - 4 * a * (c - top)
+    if disc < 0:
+        return [-3.0, 3.0]
+    root = disc ** 0.5
+    return [max(-3.0, (-b - root) / (2 * a)),
+            min(3.0, (-b + root) / (2 * a))]
+
+
 class StandardFrameScene(Scene):
     """本书讲解画面的标准版式：左上标题、中央坐标系与曲线、右侧参数面板、底部注释。
 
@@ -55,8 +70,10 @@ class StandardFrameScene(Scene):
             return Transform(panel[idx], row, run_time=0.6)
 
         def new_curve(a, b, c):
-            """生成新抛物线"""
+            """生成新抛物线（按可见范围裁剪，不越轴）"""
+            x0, x1 = visible_x_span(a, b, c)
             return axes.plot(lambda x: a * x ** 2 + b * x + c,
+                            x_range=[x0, x1],
                             color=WHITE, stroke_width=4)
 
         # ---------- 开场：版式骨架全部登场 ----------
@@ -146,8 +163,10 @@ class StandardFrameScene(Scene):
         ).move_to(self.AXES_CENTER)
 
     def _make_parabola(self, axes, a, b, c):
-        """生成初始抛物线：白色，与轴线蓝灰形成对比"""
+        """生成初始抛物线：白色，与轴线蓝灰形成对比（按可见范围裁剪）"""
+        x0, x1 = visible_x_span(a, b, c)
         return axes.plot(lambda x: a * x ** 2 + b * x + c,
+                         x_range=[x0, x1],
                          color=WHITE, stroke_width=4)
 
     def _make_formula(self, highlight):
