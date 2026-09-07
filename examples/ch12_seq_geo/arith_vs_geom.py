@@ -81,7 +81,8 @@ class ArithVsGeom(Scene):
         self.wait(1.0)
         lab_lin = Text("一次函数 y = 3x − 1 的整数点", font=FONT,
                        font_size=20, color=GOLD)
-        lab_lin.move_to(ax_l.c2p(4.9, 4.0))
+        # 标签下移避开虚线：直线在 y=4 处横穿 x≈1.7，原锚点与虚线末端相接
+        lab_lin.move_to(ax_l.c2p(4.9, 2.2))
         self.play(FadeIn(lab_lin), run_time=0.7)
         self.set_note("均匀增长 = 直线——等差数列是「掰碎了的一次函数」")
         self.wait(2.2)
