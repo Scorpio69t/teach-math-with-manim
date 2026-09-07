@@ -73,6 +73,7 @@ class SecantToTangent(Scene):
                        color=GREEN)
         tan_lab.next_to(axes.c2p(2.2, 2.4), RIGHT, buff=0.1)
         self.set_note("h → 0 的极限：切线斜率恰好是 2")
-        self.play(FadeOut(Q), FadeOut(sec), run_time=0.8)
+        self.play(FadeOut(Q), FadeOut(sec),
+                  FadeOut(slope_lab), FadeOut(slope_num), run_time=0.8)
         self.play(Create(tangent), Write(tan_lab), run_time=1.5)
         self.wait(1.5)

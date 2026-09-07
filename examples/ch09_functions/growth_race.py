@@ -47,7 +47,7 @@ class GrowthRace(Scene):
         exp_dot = always_redraw(lambda: Dot(
             axes.c2p(x.get_value(), f_exp(x.get_value())), color=GOLD,
             radius=0.09))
-        # 数值面板：线性在左、指数在右，become 原地刷新
+        # 数值面板：线性在上、指数在下，原地刷新
         lin_num = always_redraw(lambda: Text(
             f"{f_lin(x.get_value()):.0f}", font=FONT, font_size=30,
             color=TEAL).next_to(axes.c2p(10.5, 3400), UP))

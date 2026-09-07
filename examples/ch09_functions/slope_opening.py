@@ -63,7 +63,9 @@ class SlopeAndOpening(Scene):
         self.wait(1)
 
         self.set_note("k 变大：同样的横走 1，竖得更高——更陡")
-        self.play(k.animate.set_value(2.5), run_time=3, rate_func=linear)
+        # 拖动上限 2.3 是算出来的：k 再大，直线按安全高度裁剪后
+        # 末端会缩进三角竖腿内侧，竖腿顶端就挂空了（4.6/k ≥ 2 才闭合）
+        self.play(k.animate.set_value(2.3), run_time=3, rate_func=linear)
         self.wait(1)
         self.set_note("k 变负：从左到右，一路上下坡反过来了")
         self.play(k.animate.set_value(-1.2), run_time=3, rate_func=linear)
