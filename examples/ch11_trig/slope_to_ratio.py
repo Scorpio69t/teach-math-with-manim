@@ -91,10 +91,11 @@ class SlopeToRatio(Scene):
         self.wait(0.6)
 
         # ===== 数值面板（右侧，两列钉缘） =====
-        px = 4.6
+        # 锚点按放大 1.4 倍后的三角形右缘（x=3.8）反算，保证全程净空
+        px = 5.4
         p_title = Text("坡度 = 高 ÷ 水平", font=FONT, font_size=26,
                        weight=BOLD, color=C_TEXT)
-        p_title.move_to(np.array([3.1, 2.7, 0]), aligned_edge=LEFT)
+        p_title.move_to(np.array([4.05, 2.7, 0]), aligned_edge=LEFT)
         row1 = self.pinned_pair("h =", lambda: H0 * k.get_value(),
                                 np.array([px, 2.05, 0]))
         row2 = self.pinned_pair("l =", lambda: L0 * k.get_value(),

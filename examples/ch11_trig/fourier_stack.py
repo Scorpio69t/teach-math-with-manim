@@ -138,6 +138,7 @@ class FourierStack(Scene):
         self.play(Indicate(sum_curve, color=GOLD), run_time=1.2)
         final = Text("方波可以由奇次正弦谐波逐步逼近",
                      font=FONT, font_size=28, weight=BOLD, color=GOLD)
-        final.move_to(UP * 2.9 + LEFT * 1.6)
+        # 金句放公式行下方、坐标区上方的空带，避免与右上公式同排相接
+        final.move_to(UP * 2.35 + LEFT * 2.5)
         self.play(FadeIn(final), run_time=1.0)
         self.wait(2.6)
