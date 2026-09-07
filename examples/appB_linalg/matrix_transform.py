@@ -59,7 +59,8 @@ class MatrixTransformScene(Scene):
         self.play(FadeOut(lab_i), FadeOut(lab_j),
                   ApplyMatrix(MATRIX, moving), run_time=3)
         lab_i.next_to(vec_i.get_end(), DOWN, buff=0.15)
-        lab_j.next_to(vec_j.get_end(), LEFT, buff=0.15)
+        # j 标签放箭头上方：放左侧会被箭头遮住 j 的下伸钩，读起来像 i
+        lab_j.next_to(vec_j.get_end(), UP, buff=0.12)
         self.play(FadeIn(lab_i), FadeIn(lab_j), run_time=0.5)
         self.wait(1)
 
