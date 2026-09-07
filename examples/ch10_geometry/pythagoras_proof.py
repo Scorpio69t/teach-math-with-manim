@@ -142,7 +142,8 @@ class PythagorasProof(Scene):
         self.play(FadeOut(ledger1), Write(ledger2), run_time=1.4)
         banner = Text("c² = a² + b²，即 25 = 9 + 16 ✓",
                       font=FONT, font_size=30, weight=BOLD, color=GOLD)
-        banner.move_to(UP * 2.9)
+        # 横幅右移避开左上标题：标题在 UL，账本列顶行在 y≈2.0 之下
+        banner.move_to(RIGHT * 1.6 + UP * 2.9)
         box = SurroundingRectangle(banner, color=GOLD, buff=0.25)
         self.play(FadeIn(banner), Create(box), run_time=1.2)
         self.wait(2)
