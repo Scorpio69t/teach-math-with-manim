@@ -15,14 +15,15 @@ class SlopeAndOpening(Scene):
                          .move_to(NOTE_POS))
 
     def make_panel(self, attr, tracker):
-        """钉屏数值面板：标签在左、数字钉右缘，become 原地刷新。"""
-        num = Text(f"{tracker.get_value():.2f}", font=FONT,
+        """钉屏数值面板：正负号恒显（+.2f）保证宽度不变，
+        数字右缘钉角，负号出现时不会向左压住标签。"""
+        num = Text(f"{tracker.get_value():+.2f}", font=FONT,
                    font_size=36, color=GOLD)
         num.to_corner(UR, buff=0.6)
         lab = MathTex(f"{attr}=", font_size=40)
         lab.next_to(num, LEFT, buff=0.12)
         num.add_updater(lambda d: d.become(
-            Text(f"{tracker.get_value():.2f}", font=FONT,
+            Text(f"{tracker.get_value():+.2f}", font=FONT,
                  font_size=36, color=GOLD).to_corner(UR, buff=0.6)))
         return lab, num
 
