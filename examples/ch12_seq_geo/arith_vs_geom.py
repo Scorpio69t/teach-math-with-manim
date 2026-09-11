@@ -100,7 +100,7 @@ class ArithVsGeom(Scene):
                        font_size=20, color=TEAL)
         lab_exp.move_to(ax_r.c2p(2.4, 28))
         self.play(FadeIn(lab_exp), run_time=0.7)
-        self.set_note("翻倍增长 = 指数曲线——第 6 项已经窜到 32")
+        self.set_note("翻倍增长 = 指数曲线——第 6 项已经冲到 32")
         self.wait(2.2)
 
         # ===== 结案对照 =====
