@@ -127,7 +127,7 @@ class VectorProof(Scene):
         self.play(Write(s5), Flash(pt_p(), color=GOLD), run_time=1.4)
         self.wait(1.2)
 
-        # 数值验尸：P 跑起来，两个读数钉死
+        # 数值复核：P 跑起来，两个读数钉死
         def dot_now():
             u, v = pt_a - pt_p(), pt_b - pt_p()
             return float(np.dot(u, v))
