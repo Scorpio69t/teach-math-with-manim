@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.5        # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 READOUT_POS = [3.3, 2.65, 0]  # 读数行锚点（右板上方）
 X0 = 1.6                     # 复盘割线逼近的考察点
 TANGENT_TOP = 2.9            # 动态切线的上边界，给章标题留出安全区
@@ -22,8 +40,10 @@ class DerivativeSweep(Scene):
     """左板切线随切点扫动，右板把斜率逐点收集——导函数曲线自己长出来。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def secant_at(self, h, color=RED):
         """过 (X0, f(X0)) 与 (X0+h, f(X0+h)) 的定长割线（展示方向，不是距离）。"""
@@ -66,7 +86,7 @@ class DerivativeSweep(Scene):
         self.lax.move_to([-3.6, 1.3, 0])
         curve = self.lax.plot(f, x_range=[-3.2, 3.2], color=TEAL,
                               stroke_width=4)
-        f_lab = Text("y = x²/4", font=FONT, font_size=24, color=TEAL)
+        f_lab = MathTex("y = x^2/4", color=TEAL).scale(0.9)
         f_lab.move_to([-5.5, -0.45, 0])
         self.play(Create(self.lax), run_time=1.0)
         self.play(Create(curve), FadeIn(f_lab), run_time=1.4)

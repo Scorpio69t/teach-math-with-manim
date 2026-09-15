@@ -5,6 +5,24 @@ C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.2
 
 
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
+
 class ParaboloidSlices(ThreeDScene):
     """旋转抛物面：水平切片一路升高，圆从点长成整个碗。"""
 
@@ -49,8 +67,7 @@ class ParaboloidSlices(ThreeDScene):
         title = Text("切片升起来，碗就长出来了", font=FONT,
                      font_size=28, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("旋转抛物面 z = x² + y²", font=FONT,
-                         font_size=26, color=C_TEXT)
+        self.note = mix([("t", "旋转抛物面 "), ("m", "z = x^2 + y^2")])
         self.note.move_to(NOTE_POS)
 
         self.set_camera_orientation(phi=70 * DEGREES, theta=-75 * DEGREES)

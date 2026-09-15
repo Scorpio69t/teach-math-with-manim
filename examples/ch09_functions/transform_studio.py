@@ -3,6 +3,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 PLOT_Y_MIN = -4.0         # 曲线安全区：给上下方标题、注释条留出净空
 PLOT_Y_MAX = 5.0
 PLOT_X_HALF = 2.4
@@ -21,8 +39,10 @@ class TransformStudio(Scene):
     """函数变换工作室：y = a(x−h)² + k，三个滑杆看透平移伸缩翻转。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def make_live_curve(self, axes, a, h, k):
         a_value = a.get_value()
@@ -35,11 +55,11 @@ class TransformStudio(Scene):
             color=GOLD, stroke_width=4)
 
     def construct(self):
-        title = Text("y = a(x − h)² + k：三个滑杆", font=FONT,
-                     font_size=32, weight=BOLD, color=C_TEXT)
+        title = mix([("m", "y = a(x-h)^2 + k"), ("t", "：三个滑杆")],
+            size=32, math_scale=1.0)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("灰色是 y = x²，金色是变换后的它", font=FONT,
-                         font_size=26, color=C_TEXT)
+        self.note = mix([("t", "灰色是 "), ("m", "y = x^2"),
+                        ("t", "，金色是变换后的它")])
         self.note.move_to(NOTE_POS)
 
         axes = Axes(x_range=[-6, 6, 1], y_range=[-4, 6, 1],

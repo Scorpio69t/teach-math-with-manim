@@ -4,6 +4,24 @@ FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
 X_MIN, X_MAX = -1.2, 7.2          # 自变量范围
 PHI = PI / 3                      # 初相 φ
 C_PATH_A = TEAL                   # 路线一：先平移后伸缩
@@ -41,8 +59,8 @@ class TwoPathTransform(Scene):
         title = Text("两条路线，一个终点：平移量为何不一样？",
                      font=FONT, font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("目标：把 y = sin x 变成 y = sin(2x + π/3)",
-                         font=FONT, font_size=26, color=C_TEXT)
+        self.note = mix([("t", "目标：把 "), ("m", "y = \\sin x"),
+                        ("t", " 变成 "), ("m", "y = \\sin(2x + \\pi/3)")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
 
@@ -51,8 +69,7 @@ class TwoPathTransform(Scene):
 
         # ===== 出发：y = sin x =====
         c_sin = self.plot(ax, np.sin, GREY_B)
-        formula = Text("y = sin x", font=FONT, font_size=30,
-                       weight=BOLD, color=C_TEXT)
+        formula = MathTex("y = \\sin x", color=C_TEXT).scale(0.9)
         formula.to_corner(UR, buff=0.6).shift(DOWN * 0.35)
         self.play(Create(c_sin), FadeIn(formula), run_time=1.4)
         self.wait(0.8)
@@ -72,9 +89,9 @@ class TwoPathTransform(Scene):
         self.set_note("第一步：向左平移 π/3 个单位——整个波形搬家")
         c_a1 = self.plot(ax, lambda x: np.sin(x + PHI), C_PATH_A)
         self.play(Transform(c_sin, c_a1), Transform(
-            formula, Text("y = sin(x + π/3)", font=FONT, font_size=30,
-                          weight=BOLD, color=C_PATH_A
-                          ).to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
+            formula, MathTex("y = \\sin(x + \\pi/3)", color=C_PATH_A)
+                          .scale(0.9)
+                          .to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
             run_time=2.2)
         self.play(Indicate(formula, color=C_PATH_A), run_time=0.8)
         self.wait(1.4)
@@ -82,9 +99,9 @@ class TwoPathTransform(Scene):
         self.set_note("第二步：横坐标压缩到 1/2——周期从 2π 变成 π")
         c_a2 = self.plot(ax, f_final, C_PATH_A)
         self.play(Transform(c_sin, c_a2), Transform(
-            formula, Text("y = sin(2x + π/3)", font=FONT, font_size=30,
-                          weight=BOLD, color=C_PATH_A
-                          ).to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
+            formula, MathTex("y = \\sin(2x + \\pi/3)", color=C_PATH_A)
+                          .scale(0.9)
+                          .to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
             run_time=2.2)
         self.set_note("路线一完成：平移量就是 φ = π/3，一步到位")
         self.wait(1.8)
@@ -121,9 +138,9 @@ class TwoPathTransform(Scene):
         self.set_note("关键一步：此时再平移，只移 π/6——不是 π/3！")
         c_b2 = self.plot(ax, f_final, C_PATH_B)
         self.play(Transform(c_sin, c_b2), Transform(
-            formula, Text("y = sin 2(x + π/6)", font=FONT, font_size=30,
-                          weight=BOLD, color=C_PATH_B
-                          ).to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
+            formula, MathTex("y = \\sin 2(x + \\pi/6)", color=C_PATH_B)
+                          .scale(0.9)
+                          .to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
             run_time=2.2)
         self.play(Indicate(formula, color=C_PATH_B), run_time=1.0)
         self.wait(1.6)
@@ -131,9 +148,9 @@ class TwoPathTransform(Scene):
         # ===== 结案：殊途同归 =====
         self.set_note("sin 2(x + π/6) 展开就是 sin(2x + π/3)——同一条曲线")
         self.play(FadeOut(path_tag2), Transform(
-            formula, Text("y = sin(2x + π/3)  ✓", font=FONT,
-                          font_size=30, weight=BOLD, color=GOLD
-                          ).to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
+            formula, MathTex("y = \\sin(2x + \\pi/3)", color=GOLD)
+                          .scale(0.9)
+                          .to_corner(UR, buff=0.6).shift(DOWN * 0.35)),
             run_time=1.0)
         self.play(c_sin.animate.set_color(GOLD), run_time=0.8)
 

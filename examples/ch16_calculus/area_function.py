@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 R1_POS = [5.3, 2.5, 0]       # x 读数
 R2_POS = [5.3, 1.9, 0]       # 面积读数
 R3_POS = [5.3, 0.9, 0]       # 长条节拍：ΔA 行
@@ -32,8 +50,10 @@ class AreaFunction(Scene):
     停靠点放大一条新增的『面积长条』：ΔA/Δx 几乎就是 f(x)。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         title = Text("面积越攒越多——攒的速度由谁决定？", font=FONT,
@@ -99,10 +119,10 @@ class AreaFunction(Scene):
         link = DashedLine(self.top.c2p(x0, f(x0)), self.bot.c2p(x0, A(x0)),
                           color=GREY_B, stroke_width=2)
         dA = A(x0 + DX) - A(x0)
-        row3 = Text(f"ΔA = {dA:.3f}（红色长条）", font=FONT, font_size=22,
-                    color=RED).move_to(R3_POS)
-        row4 = Text(f"ΔA÷Δx = {dA / DX:.2f} ≈ f(2)", font=FONT,
-                    font_size=22, color=GREEN).move_to(R4_POS)
+        row3 = mix([("m", f"\\Delta A = {dA:.3f}"),
+                    ("t", "（红色长条）")], size=22, color=RED).move_to(R3_POS)
+        row4 = MathTex(f"\\Delta A \\div \\Delta x = {dA / DX:.2f} \\approx f(2)",
+                      color=GREEN).scale(0.85).move_to(R4_POS)
         self.play(x_track.animate.set_value(x0 + DX), FadeIn(strip),
                   run_time=1.0, rate_func=linear)
         self.play(Create(box), FadeIn(row3), run_time=0.8)
@@ -117,8 +137,7 @@ class AreaFunction(Scene):
                   FadeOut(row3), FadeOut(row4), run_time=0.6)
         self.play(x_track.animate.set_value(3.0), run_time=1.6,
                   rate_func=linear)
-        a_lab = Text("A(x) = x + x²/4", font=FONT, font_size=24,
-                     color=GOLD)
+        a_lab = MathTex("A(x) = x + x^2/4", color=GOLD).scale(0.9)
         a_lab.move_to([2.35, -0.75, 0])
         self.play(FadeIn(a_lab), run_time=0.8)
         self.set_note("A(x) 攒面积的速度（导数），恰好是 f 的高度")

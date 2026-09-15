@@ -5,6 +5,24 @@ C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.2
 
 
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
+
 class SurfaceDemo(ThreeDScene):
     """Surface：给参数方程一片定义域，长出一张曲面。"""
 
@@ -19,8 +37,8 @@ class SurfaceDemo(ThreeDScene):
         self.add_fixed_in_frame_mobjects(self.note)
 
     def construct(self):
-        title = Text("马鞍面：z = x² − y²", font=FONT, font_size=32,
-                     weight=BOLD, color=C_TEXT)
+        title = mix([("t", "马鞍面："), ("m", "z = x^2 - y^2")],
+                    size=32, math_scale=1.0)
         title.to_corner(UL, buff=0.5)
         self.note = Text("曲面是一张参数网格", font=FONT,
                          font_size=26, color=C_TEXT)

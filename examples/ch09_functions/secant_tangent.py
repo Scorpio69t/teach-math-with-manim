@@ -3,6 +3,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 PLOT_Y_MIN = -1.0
 H_START = 1.0             # 保证初始动点 Q(2, 4) 位于坐标轴视窗内
 
@@ -11,15 +29,17 @@ class SecantToTangent(Scene):
     """割线逼近切线：极限不是代入，是无限靠近的过程。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         title = Text("割线逼近切线：极限的眼睛", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("y = x²，盯住点 P(1, 1)", font=FONT,
-                         font_size=26, color=C_TEXT)
+        self.note = mix([("m", "y = x^2"), ("t", "，盯住点 "),
+                        ("m", "P(1, 1)")])
         self.note.move_to(NOTE_POS)
 
         axes = Axes(x_range=[-1, 3, 1], y_range=[PLOT_Y_MIN, 5, 1],

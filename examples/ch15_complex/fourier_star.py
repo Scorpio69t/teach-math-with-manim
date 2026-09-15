@@ -27,13 +27,32 @@ def star_contour():
     return np.array([p[0] + 1j * p[1] for p in pts]), vs
 
 
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
 class FourierStar(Scene):
     """欧拉公式的华丽应用：9 支各按自身频率旋转的箭头首尾相接，
     末端描出五角星采样轮廓的有限 DFT 近似。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         # ===== 信号与分解（离散傅里叶变换） =====
@@ -51,8 +70,8 @@ class FourierStar(Scene):
         title = Text("几个圆，能画一颗星？", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("欧拉公式说：e^(iθ) 是一支会旋转的箭头",
-                         font=FONT, font_size=26, color=C_TEXT)
+        self.note = mix([("t", "欧拉公式说："), ("m", "e^{i\theta}"),
+                         ("t", " 是一支会旋转的箭头")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
         self.wait(1.8)

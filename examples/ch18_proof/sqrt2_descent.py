@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 VERDICT_POS = [0, -2.75, 0]
 
 Q = 7                        # 直角边的数据长度
@@ -25,15 +43,17 @@ class Sqrt2Descent(Scene):
     等腰直角三角形——最小性自我击败，假设崩塌。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
-        title = Text("√2 能写成一个分数吗？", font=FONT,
-                     font_size=32, weight=BOLD, color=C_TEXT)
+        title = mix([("m", "\\sqrt{2}"), ("t", " 能写成一个分数吗？")],
+                    size=32, math_scale=1.0)
         title.to_corner(UL, buff=0.3)
-        self.note = Text("假设能：√2 = p/q——看看这个假设把自己逼到哪",
-                         font=FONT, font_size=26, color=C_TEXT)
+        self.note = mix([("t", "假设能："), ("m", "\\sqrt{2} = p/q"),
+                        ("t", "——看看这个假设把自己逼到哪")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
         self.wait(1.8)
@@ -102,8 +122,9 @@ class Sqrt2Descent(Scene):
         self.set_note("同样的构造还能再来一遍——更小的整数解永远造得出来")
         self.wait(2.2)
 
-        verdict = Text("假设自我复制出更小的解——无限递降不可能，√2 不是分数",
-                       font=FONT, font_size=28, weight=BOLD, color=GOLD)
+        verdict = mix([("t", "假设自我复制出更小的解——无限递降不可能，"),
+                       ("m", "\\sqrt{2}"), ("t", " 不是分数")],
+                      size=28, color=GOLD, math_scale=0.95, bold=True)
         verdict.move_to(VERDICT_POS)
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)
         self.set_note("反证法：不直接证明它对，而是证明它的反面活不下去")

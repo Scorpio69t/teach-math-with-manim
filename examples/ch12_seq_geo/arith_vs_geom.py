@@ -4,6 +4,24 @@ FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
 N_TERMS = 6               # 两边都演示 6 项
 
 
@@ -35,11 +53,11 @@ class ArithVsGeom(Scene):
                     axis_config={"color": GREY, "stroke_width": 1.5},
                     tips=False)
         ax_r.move_to(RIGHT * 3.0 + DOWN * 0.15)
-        lab_l = Text("等差：a = 2 + (n−1) × 3", font=FONT, font_size=22,
-                     color=GOLD)
+        lab_l = mix([("t", "等差："), ("m", "a = 2 + (n-1) \\times 3")],
+                    size=22, color=GOLD)
         lab_l.next_to(ax_l, UP, buff=0.15)
-        lab_r = Text("等比：b = 1 × 2ⁿ⁻¹", font=FONT, font_size=22,
-                     color=TEAL)
+        lab_r = mix([("t", "等比："), ("m", "b = 1 \\times 2^{n-1}")],
+                    size=22, color=TEAL)
         lab_r.next_to(ax_r, UP, buff=0.15)
         xlab_l = Text("n", font=FONT, font_size=20, color=GREY_B)
         xlab_l.next_to(ax_l.x_axis, RIGHT, buff=0.1)
@@ -96,8 +114,8 @@ class ArithVsGeom(Scene):
         dash_r = DashedVMobject(curve_r, num_dashes=60)
         self.play(Create(dash_r), run_time=1.8)
         self.wait(1.0)
-        lab_exp = Text("指数函数 y = 2ˣ⁻¹ 的整数点", font=FONT,
-                       font_size=20, color=TEAL)
+        lab_exp = mix([("t", "指数函数 "), ("m", "y = 2^{x-1}"),
+                       ("t", " 的整数点")], size=20, color=TEAL)
         lab_exp.move_to(ax_r.c2p(2.4, 28))
         self.play(FadeIn(lab_exp), run_time=0.7)
         self.set_note("翻倍增长 = 指数曲线——第 6 项已经冲到 32")

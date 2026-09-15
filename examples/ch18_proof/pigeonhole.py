@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 R1_POS = [4.6, 2.4, 0]       # 计数读数
 R2_POS = [4.6, 1.8, 0]       # 结论读数
 VERDICT_POS = [0, -2.75, 0]
@@ -23,8 +41,10 @@ class Pigeonhole(Scene):
     第二幕：边长 2 的正方形任取 5 点，必有两点距离 ≤ √2。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         title = Text("多出来的那一个，去了哪里？", font=FONT,
@@ -116,8 +136,7 @@ class Pigeonhole(Scene):
         link = Line(sc(p0), sc(p1), color=RED, stroke_width=4)
         rr1 = Text("同格两点的距离：", font=FONT, font_size=24,
                    color=C_TEXT).move_to(R1_POS)
-        rr2 = Text(f"{dist:.2f} ≤ √2 ≈ {np.sqrt(2):.2f}", font=FONT,
-                   font_size=26, weight=BOLD, color=RED).move_to(R2_POS)
+        rr2 = MathTex(f"{dist:.2f} \\le \\sqrt{2} \\approx {np.sqrt(2):.2f}", color=RED).scale(0.9).move_to(R2_POS)
         self.play(Create(link), run_time=0.7)
         self.play(FadeIn(rr1), FadeIn(rr2), run_time=0.7)
         self.set_note("同格必撞线：小格对角线才 √2，同格距离超不过它")

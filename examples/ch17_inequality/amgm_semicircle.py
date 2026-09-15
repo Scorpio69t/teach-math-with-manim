@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 R1_POS = [4.8, 2.2, 0]       # a / b 读数
 R2_POS = [4.8, 1.6, 0]       # 半径读数
 R3_POS = [4.8, 1.0, 0]       # 弦高读数
@@ -28,12 +46,15 @@ class AmGmSemicircle(Scene):
     分点滑动，弦高追着半径长，a = b 时恰好贴上——等号成立。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
-        title = Text("(a+b)/2 和 √ab，谁大？——一个圆讲完", font=FONT,
-                     font_size=32, weight=BOLD, color=C_TEXT)
+        title = mix([("m", "\\dfrac{a+b}{2}"), ("t", " 和 "),
+             ("m", "\\sqrt{ab}"), ("t", "，谁大？——一个圆讲完")],
+            size=32, math_scale=1.0)
         title.to_corner(UL, buff=0.5)
         self.note = Text("把 a 和 b 首尾接成一条直径，看半圆里藏着什么",
                          font=FONT, font_size=26, color=C_TEXT)
@@ -104,9 +125,14 @@ class AmGmSemicircle(Scene):
         r2 = Text(f"(a+b)/2 = {TOTAL / 2:.3f}（半径）",
                   font=FONT, font_size=24, color=GOLD)
         r2.move_to(R2_POS)
-        r3 = always_redraw(lambda: Text(
-            f"√ab = {np.sqrt(a_val.get_value() * (TOTAL - a_val.get_value())):.3f}（弦高）",
-            font=FONT, font_size=24, color=RED).move_to(R3_POS))
+        r3_sym = MathTex(r"\sqrt{ab} =", color=RED).scale(0.85)
+        r3_num = DecimalNumber(0, num_decimal_places=3, color=RED)
+        r3_num.scale(0.85)
+        r3 = VGroup(r3_sym, r3_num).arrange(RIGHT, buff=0.10)
+        r3.add_updater(lambda m: (
+            r3_num.set_value(np.sqrt(a_val.get_value() *
+                                     (TOTAL - a_val.get_value()))),
+            m.move_to(R3_POS)))
         self.play(FadeIn(r1), FadeIn(r2), FadeIn(r3), run_time=0.8)
         self.set_note("OD 也是半径——直角三角形 OCD 里，斜边永远压得住直角边")
         self.wait(2.4)
@@ -135,8 +161,10 @@ class AmGmSemicircle(Scene):
         # ===== 结案 =====
         self.play(a_val.animate.set_value(6.0), run_time=1.0,
                   rate_func=linear)
-        verdict = Text("(a+b)/2 ≥ √ab——半径压弦高，a = b 时恰好贴上",
-                       font=FONT, font_size=28, weight=BOLD, color=GOLD)
+        verdict = mix([("m", "\\dfrac{a+b}{2} \\ge \\sqrt{ab}"),
+                       ("t", "——半径压弦高，"), ("m", "a = b"),
+                       ("t", " 时恰好贴上")],
+                      size=28, color=GOLD, math_scale=0.95, bold=True)
         verdict.move_to(VERDICT_POS)
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)
         self.set_note("代数里的配方 (a−b)² ≥ 0，几何里就是一个直角三角形")

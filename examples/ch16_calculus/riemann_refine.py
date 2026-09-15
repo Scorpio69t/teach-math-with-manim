@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.5        # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 R1_POS = [5.2, 2.4, 0]       # 读数面板第一行
 R2_POS = [5.2, 1.8, 0]       # 读数面板第二行
 R3_POS = [5.2, 1.2, 0]       # 精确值行（结案时出场）
@@ -24,8 +42,10 @@ class RiemannRefine(Scene):
     """右端点矩形从 4 个加密到 64 个：面积和读数自己走向 8/3。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def right_sum(self, n):
         """n 个右端点矩形的面积和——读数一律现算，不手抄。"""
@@ -63,7 +83,7 @@ class RiemannRefine(Scene):
         self.axes.move_to([-0.6, 0.45, 0])
         curve = self.axes.plot(f, x_range=[0, 2.05], color=TEAL,
                                stroke_width=4)
-        f_lab = Text("y = x²", font=FONT, font_size=24, color=TEAL)
+        f_lab = MathTex("y = x^2", color=TEAL).scale(0.9)
         f_lab.move_to([2.4, 2.75, 0])
         self.play(Create(self.axes), run_time=1.0)
         self.play(Create(curve), FadeIn(f_lab), run_time=1.4)

@@ -3,6 +3,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 C0 = LEFT * 3.3 + UP * 0.1
 R = 2.0                   # 圆半径（场景单位）
 
@@ -97,11 +115,11 @@ class CircleTheorems(Scene):
         lab_d.move_to(np.array([4.25, 2.3, 0]), aligned_edge=RIGHT)
         lab_h = Text("半弦 =", font=FONT, font_size=24, color=C_TEXT)
         lab_h.move_to(np.array([4.25, 1.7, 0]), aligned_edge=RIGHT)
-        lab_chk = Text("d²+半弦² =", font=FONT, font_size=24,
-                       color=C_TEXT)
+        lab_chk = mix([("m", "d^2 +"), ("t", "半弦"), ("m", "^2 =")],
+                      size=24)
         lab_chk.move_to(np.array([4.25, 1.1, 0]), aligned_edge=RIGHT)
-        lab_r = Text("r = 2，平方和恒等于 r² = 4", font=FONT,
-                     font_size=20, color=TEAL)
+        lab_r = mix([("m", "r = 2"), ("t", "，平方和恒等于 "),
+                    ("m", "r^2 = 4")], size=20, color=TEAL)
         lab_r.move_to(np.array([4.9, 0.55, 0]))
         self.play(Create(diam), run_time=0.8)
         self.add(chord, foot, tri_legs, rmark,

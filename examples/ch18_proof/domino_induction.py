@@ -8,6 +8,24 @@ from manim import *
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
+
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
 GREAD_POS = [3.4, 2.5, 0]    # 方格读数
 VERDICT_POS = [0, -2.75, 0]
 
@@ -20,8 +38,10 @@ class DominoInduction(Scene):
     1+3+5+...+(2n-1) = n²——传递步就是那一圈 L。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         title = Text("命题有无穷多个，怎么一次证完？", font=FONT,
@@ -72,7 +92,7 @@ class DominoInduction(Scene):
                        GRID0[1] + (j + 0.5) * CELL, 0])
             return s
 
-        gread = Text("从 1 = 1² 开始", font=FONT, font_size=26, color=C_TEXT)
+        gread = mix([("t", "从 "), ("m", "1 = 1^2"), ("t", " 开始")])
         gread.move_to(GREAD_POS)
         self.add(gread)
 
@@ -91,16 +111,19 @@ class DominoInduction(Scene):
                 *[cell(k, j, RED) for j in range(k)])
             total += 2 * k + 1
             self.play(FadeIn(new_cells, lag_ratio=0.15), run_time=0.9)
-            gread.become(Text(
-                f"{total} = {k + 1}²（+{2 * k + 1} 格）", font=FONT,
-                font_size=26, color=C_TEXT).move_to(GREAD_POS))
+            gread.become(VGroup(
+                MathTex(f"{total} = {(k + 1)}^2", color=C_TEXT).scale(0.9),
+                zh(f"（+{2 * k + 1} 格）", 26, C_TEXT))
+                .arrange(RIGHT, buff=0.12).move_to(GREAD_POS))
             self.set_note(f"第 {k + 1} 圈 L 形恰好 {2 * k + 1} 格："
                           f"{k}² 补成 {k + 1}²")
             self.wait(1.3)
             self.play(new_cells.animate.set_color(GOLD), run_time=0.5)
             squares.add(new_cells)
-        gread.become(Text("1+3+5+7 = 4²（+7 格）", font=FONT,
-                          font_size=26, color=C_TEXT).move_to(GREAD_POS))
+        gread.become(VGroup(
+            MathTex("1+3+5+7 = 4^2", color=C_TEXT).scale(0.9),
+            zh("（+7 格）", 26, C_TEXT))
+            .arrange(RIGHT, buff=0.12).move_to(GREAD_POS))
         self.set_note("每一圈 L 形都是奇数格——传递步在方格上肉眼可见")
         self.wait(2.0)
 

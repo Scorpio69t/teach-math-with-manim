@@ -5,6 +5,24 @@ FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
 U = 0.7                    # 单位 1 的屏幕长度
 CENTER = np.array([-0.3, 0.7, 0])   # 复平面原点（给螺线留生长空间）
 STEPS = 12
@@ -16,19 +34,21 @@ class ComplexSpiral(Scene):
     """复数乘法 = 旋转 + 缩放：连乘 w 十二次，等角螺线浮现。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):          # 纯中文注释条
+            self.note.become(zh(msg).move_to(NOTE_POS))
+        else:                             # 中文 + 公式混排
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def screen(self, z):
         """复数 → 屏幕坐标。"""
         return CENTER + U * np.array([z.real, z.imag, 0])
 
     def construct(self):
-        title = Text("复数乘法在干什么？", font=FONT,
-                     font_size=32, weight=BOLD, color=C_TEXT)
+        title = zh("复数乘法在干什么？", 32, bold=True)
         title.to_corner(UL, buff=0.5)
-        self.note = Text("z = 1 出发，每次乘同一个 w = 1.15 × e^(i·25°)",
-                         font=FONT, font_size=26, color=C_TEXT)
+        self.note = mix([("m", "z = 1"),
+                         ("t", " 出发，每次乘同一个 "),
+                         ("m", "w = 1.15 \times e^{i\cdot 25^\circ}")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
         self.wait(1.8)
@@ -55,7 +75,7 @@ class ComplexSpiral(Scene):
                       color=GOLD, stroke_width=5,
                       max_tip_length_to_length_ratio=0.15)
         d0 = Dot(self.screen(z), radius=0.07, color=GOLD)
-        lab0 = Text("z0 = 1", font=FONT, font_size=22, color=GOLD)
+        lab0 = MathTex("z_0 = 1", color=GOLD).scale(0.8)
         lab0.next_to(d0, DOWN, buff=0.18)
         self.play(GrowArrow(arrow), FadeIn(d0), FadeIn(lab0), run_time=0.9)
         self.set_note("盯住箭头：下一步会发生什么？")

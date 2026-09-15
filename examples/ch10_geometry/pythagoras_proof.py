@@ -4,6 +4,24 @@ FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.4     # 注释条固定锚点（换内容时保持位置稳定）
 
+
+def zh(s, size=26, color=C_TEXT, bold=False):
+    """中文文本（公式一律用 MathTex，不进这里）。"""
+    return Text(s, font=FONT, font_size=size,
+                weight=BOLD if bold else NORMAL, color=color)
+
+
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
+    """中文 + 公式混排：parts 交错给出 ("t", 文本) / ("m", LaTeX)。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(zh(s, size, color, bold))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
 A_LEN, B_LEN = 3.0, 4.0   # 3-4-5 直角三角形
 L = A_LEN + B_LEN         # 大正方形边长 a+b = 7
 S = 0.58                  # 屏幕缩放
@@ -79,8 +97,7 @@ class PythagorasProof(Scene):
         inner = Polygon(P(3, 0), P(7, 3), P(4, 7), P(0, 4),
                         color=GOLD, stroke_width=4,
                         fill_color=GOLD, fill_opacity=0.12)
-        lab_inner = Text("c²", font=FONT, font_size=30,
-                         weight=BOLD, color=GOLD)
+        lab_inner = MathTex("c^2", color=GOLD).scale(1.0)
         lab_inner.move_to(P(3.5, 3.5))
         self.play(Create(inner), FadeIn(lab_inner), FadeOut(lab_a),
                   FadeOut(lab_b), FadeOut(lab_c), run_time=1.2)
@@ -122,10 +139,8 @@ class PythagorasProof(Scene):
         sq_b = Polygon(P(3, 0), P(7, 0), P(7, 4), P(3, 4),
                        color=GOLD, stroke_width=4,
                        fill_color=GOLD, fill_opacity=0.12)
-        lab_a2 = Text("a²", font=FONT, font_size=26, weight=BOLD,
-                      color=GOLD).move_to(P(1.5, 5.5))
-        lab_b2 = Text("b²", font=FONT, font_size=26, weight=BOLD,
-                      color=GOLD).move_to(P(5, 2))
+        lab_a2 = MathTex("a^2", color=GOLD).scale(0.9).move_to(P(1.5, 5.5))
+        lab_b2 = MathTex("b^2", color=GOLD).scale(0.9).move_to(P(5, 2))
         self.play(Create(sq_a), Create(sq_b), FadeIn(lab_a2),
                   FadeIn(lab_b2), run_time=1.4)
         self.wait(1)
@@ -140,8 +155,8 @@ class PythagorasProof(Scene):
             ("两次空白必相等", GOLD),
         ])
         self.play(FadeOut(ledger1), Write(ledger2), run_time=1.4)
-        banner = Text("c² = a² + b²，即 25 = 9 + 16 ✓",
-                      font=FONT, font_size=30, weight=BOLD, color=GOLD)
+        banner = mix([("m", "c^2 = a^2 + b^2"), ("t", "，即 25 = 9 + 16 ✓")],
+                     size=30, color=GOLD, math_scale=1.0, bold=True)
         # 横幅右移避开左上标题：标题在 UL，账本列顶行在 y≈2.0 之下
         banner.move_to(RIGHT * 1.6 + UP * 2.9)
         box = SurroundingRectangle(banner, color=GOLD, buff=0.25)
