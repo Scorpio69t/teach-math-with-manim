@@ -70,7 +70,7 @@ class FourierStar(Scene):
         title = Text("几个圆，能画一颗星？", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = mix([("t", "欧拉公式说："), ("m", "e^{i\theta}"),
+        self.note = mix([("t", "欧拉公式说："), ("m", "e^{i\\theta}"),
                          ("t", " 是一支会旋转的箭头")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)

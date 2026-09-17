@@ -48,7 +48,7 @@ class ComplexSpiral(Scene):
         title.to_corner(UL, buff=0.5)
         self.note = mix([("m", "z = 1"),
                          ("t", " 出发，每次乘同一个 "),
-                         ("m", "w = 1.15 \times e^{i\cdot 25^\circ}")])
+                         ("m", "w = 1.15 \\times e^{i\\cdot 25^\\circ}")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
         self.wait(1.8)
