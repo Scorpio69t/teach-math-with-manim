@@ -14,7 +14,9 @@ R1_POS = [4.8, 2.3, 0]       # n 读数
 R2_POS = [4.8, 1.7, 0]       # 区域数读数
 R3_POS = [4.8, 1.1, 0]       # 猜想读数
 VERDICT_POS = [0, -2.75, 0]
-CNT_POS = [-2.3, -2.6, 0]    # 区域计数牌（圆心正下方）
+CNT_POS = [4.8, 0.4, 0]      # 区域计数牌（读数列下方）
+FLASH_SEC = 0.20             # 每块区域点亮时长（想要更从容就调大）
+SETTLE_SEC = 0.14            # 点亮后回落的时长
 
 
 def region_count(n):
@@ -145,7 +147,7 @@ class CircleRegions(Scene):
 
             # ===== 逐块点亮数区域：每块闪一下，计数牌同步 +1 =====
             regions = circle_regions(center, RAD, pts)
-            polys = VGroup(*[Polygon(*r, stroke_width=0, fill_color=GREY_E,
+            polys = VGroup(*[Polygon(*r, stroke_width=0, fill_color="#4A4A5C",
                                      fill_opacity=0)
                              for r in regions])
             polys.sort(lambda p: (p[0], p[1]))
@@ -157,8 +159,8 @@ class CircleRegions(Scene):
                                     color=YELLOW).move_to(CNT_POS))
                 r2.become(Text(f"区域数 = {k}", font=FONT, font_size=26,
                                color=C_TEXT).move_to(R2_POS))
-                self.play(poly.animate.set_fill(YELLOW, 0.40), run_time=0.14)
-                self.play(poly.animate.set_fill(GREY_E, 0.15), run_time=0.10)
+                self.play(poly.animate.set_fill(YELLOW, 0.40), run_time=FLASH_SEC)
+                self.play(poly.animate.set_fill("#4A4A5C", 0.28), run_time=SETTLE_SEC)
 
             ok = (cnt == len(polys) == guess)
             r2.become(Text(f"区域数 = {cnt}", font=FONT, font_size=26,
