@@ -5,6 +5,7 @@
 
 from manim import *
 from math import comb
+import math
 
 FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
 C_TEXT = "#EDEDED"
@@ -13,6 +14,7 @@ R1_POS = [4.8, 2.3, 0]       # n 读数
 R2_POS = [4.8, 1.7, 0]       # 区域数读数
 R3_POS = [4.8, 1.1, 0]       # 猜想读数
 VERDICT_POS = [0, -2.75, 0]
+CNT_POS = [-2.3, -2.6, 0]    # 区域计数牌（圆心正下方）
 
 
 def region_count(n):
@@ -20,13 +22,76 @@ def region_count(n):
     return comb(n, 4) + comb(n, 2) + 1
 
 
+def mix(parts, size=26, color=C_TEXT, math_scale=0.9):
+    """中文 + 公式混排：parts 交错给出文本串与 LaTeX 串，返回一个 VGroup。"""
+    group = VGroup()
+    for kind, s in parts:
+        if kind == "t":
+            group.add(Text(s, font=FONT, font_size=size, color=color))
+        else:
+            group.add(MathTex(s, color=color).scale(math_scale))
+    return group.arrange(RIGHT, buff=0.10)
+
+
+def _half(poly, nx, ny, c, keep_pos):
+    """凸多边形按直线 nx·x + ny·y = c 切出的单侧（Sutherland–Hodgman）。"""
+    out = []
+    for i in range(len(poly)):
+        a, b = poly[i], poly[(i + 1) % len(poly)]
+        sa = nx * a[0] + ny * a[1] - c
+        sb = nx * b[0] + ny * b[1] - c
+        if (sa >= -1e-9) == keep_pos:
+            out.append(a)
+        if (sa > 1e-9 and sb < -1e-9) or (sa < -1e-9 and sb > 1e-9):
+            t = sa / (sa - sb)
+            out.append((a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), 0))
+    return out
+
+
+def circle_regions(center, radius, pts):
+    """当前点位的全部区域多边形。
+
+    圆盘近似为 144 边形，被每条弦的直线依次切割；弦在圆内横贯全盘，
+    所以切出的凸块恰好就是弦布置的区域。弦两端点绕中点微扰 1e-6 弧度，
+    避免切割线恰好穿过细分顶点的退化。
+    """
+    disk = [[center[0] + radius * np.cos(2 * np.pi * s / 144),
+             center[1] + radius * np.sin(2 * np.pi * s / 144), 0]
+            for s in range(144)]
+    chords = [(pts[i], pts[j]) for i in range(len(pts))
+              for j in range(i + 1, len(pts))]
+    polys = [disk]
+    for A, B in chords:
+        mx, my = (A[0] + B[0]) / 2, (A[1] + B[1]) / 2
+        ca, sa = math.cos(1e-6), math.sin(1e-6)
+        a = (mx + (A[0] - mx) * ca - (A[1] - my) * sa,
+             my + (A[0] - mx) * sa + (A[1] - my) * ca, 0)
+        b = (mx + (B[0] - mx) * ca - (B[1] - my) * sa,
+             my + (B[0] - mx) * sa + (B[1] - my) * ca, 0)
+        nx, ny = a[1] - b[1], b[0] - a[0]
+        c = nx * a[0] + ny * a[1]
+        nxt = []
+        for poly in polys:
+            pos = _half(poly, nx, ny, c, True)
+            neg = _half(poly, nx, ny, c, False)
+            if len(pos) >= 3:
+                nxt.append(pos)
+            if len(neg) >= 3:
+                nxt.append(neg)
+        polys = nxt
+    return polys
+
+
 class CircleRegions(Scene):
-    """n 个点两两相连：区域数 1, 2, 4, 8, 16——猜想 2^(n-1)，
-    第六项 31 当场击碎猜想。"""
+    """n 个点两两相连：区域逐块点亮、计数牌同步累加——
+    1, 2, 4, 8, 16 印证猜想 2^(n-1)，第六项 31 当场击碎猜想。"""
 
     def set_note(self, msg):
-        self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
-                         .move_to(NOTE_POS))
+        if isinstance(msg, str):
+            self.note.become(Text(msg, font=FONT, font_size=26, color=C_TEXT)
+                             .move_to(NOTE_POS))
+        else:
+            self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
         title = Text("1, 2, 4, 8, 16——下一个是什么？", font=FONT,
@@ -54,8 +119,8 @@ class CircleRegions(Scene):
             2: "两个点一条弦，圆成两块",
             3: "三个点三条弦，四块",
             4: "四个点：八块——倍数规律呼之欲出",
-            5: "五个点：十六块！2^(n-1)，就是它了吧？",
-            6: "六个点——慢着，数清楚：不是 32",
+            5: [("t", "五个点：十六块！"), ("m", "2^{n-1}"), ("t", "，就是它了吧？")],
+            6: "六个点——慢着，跟我一块块数清楚：不是 32",
         }
         prev = None
         for n in range(1, 7):
@@ -76,22 +141,39 @@ class CircleRegions(Scene):
                 self.play(Create(chords), lag_ratio=0.12, run_time=1.1)
             r1.become(Text(f"n = {n}", font=FONT, font_size=26,
                            color=C_TEXT).move_to(R1_POS))
-            ok = (cnt == guess)
+            self.set_note(notes[n])
+
+            # ===== 逐块点亮数区域：每块闪一下，计数牌同步 +1 =====
+            regions = circle_regions(center, RAD, pts)
+            polys = VGroup(*[Polygon(*r, stroke_width=0, fill_color=GREY_E,
+                                     fill_opacity=0)
+                             for r in regions])
+            polys.sort(lambda p: (p[0], p[1]))
+            counter = Text("0", font=FONT, font_size=30, color=YELLOW
+                           ).move_to(CNT_POS)
+            self.add(counter)
+            for k, poly in enumerate(polys, 1):
+                counter.become(Text(str(k), font=FONT, font_size=30,
+                                    color=YELLOW).move_to(CNT_POS))
+                r2.become(Text(f"区域数 = {k}", font=FONT, font_size=26,
+                               color=C_TEXT).move_to(R2_POS))
+                self.play(poly.animate.set_fill(YELLOW, 0.40), run_time=0.14)
+                self.play(poly.animate.set_fill(GREY_E, 0.15), run_time=0.10)
+
+            ok = (cnt == len(polys) == guess)
             r2.become(Text(f"区域数 = {cnt}", font=FONT, font_size=26,
                            color=GREEN if ok else RED).move_to(R2_POS))
             if n >= 4:
-                r3.become(Text(f"猜想 2^(n-1) = {guess}", font=FONT,
-                               font_size=26,
-                               color=C_TEXT if ok else RED)
-                          .move_to(R3_POS))
-            self.set_note(notes[n])
+                r3.become(mix([("t", "猜想 "), ("m", "2^{n-1}"),
+                               ("t", f" = {guess}")],
+                              size=26, color=C_TEXT if ok else RED
+                              ).move_to(R3_POS))
             self.wait(2.0 if n < 5 else 2.4)
-            prev = VGroup(dots, chords)
+            prev = VGroup(dots, chords, polys, counter)
 
         # ===== 结案：猜想翻车 =====
-        r3.become(Text("猜想 2^(n-1) 翻车！", font=FONT,
-                       font_size=26, weight=BOLD, color=RED)
-                  .move_to(R3_POS))
+        r3.become(mix([("t", "猜想 "), ("m", "2^{n-1}"), ("t", " 翻车！")],
+                      size=26, color=RED).move_to(R3_POS))
         self.set_note("31 不是 32——增长的秘密，藏在弦与弦的交点里")
         self.wait(2.6)
 
