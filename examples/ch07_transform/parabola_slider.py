@@ -30,12 +30,15 @@ class ParabolaSlider(Scene):
 
         a = ValueTracker(0.25)   # 遥控器：参数 a
 
-        # 抛物线：每帧按当前 a 重画（always_redraw）
-        curve = always_redraw(
-            lambda: axes.plot(lambda x: a.get_value() * x**2,
-                              x_range=[-4, 4, 0.2], color=GOLD,
-                              stroke_width=5)
-        )
+        # a 始终为正；按 y <= 7.5 限制可见曲线，为上方文字留出空间
+        def draw_curve():
+            value = a.get_value()
+            x_limit = min(4, np.sqrt(7.5 / value))
+            return axes.plot(lambda x: value * x**2,
+                             x_range=[-x_limit, x_limit, 0.1], color=GOLD,
+                             stroke_width=5, use_smoothing=False)
+
+        curve = always_redraw(draw_curve)
 
         # 数值面板：a = 当前值（updater 每帧读数）
         panel = VGroup(
@@ -60,5 +63,5 @@ class ParabolaSlider(Scene):
         self.play(a.animate.set_value(0.25), run_time=3)
         self.wait(1.5)
 
-        self.set_note("PPT 给你三张图，这里给你整个变化过程")
+        self.set_note("a > 0：a 越大，抛物线开口越窄")
         self.wait(2)
