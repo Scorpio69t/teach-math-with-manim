@@ -38,6 +38,17 @@ def inscribed_deg(a_pos, b_pos, p_pos):
     return np.degrees(np.arccos(np.clip(cos_t, -1, 1)))
 
 
+def inscribed_mark(a_pos, b_pos, p_pos):
+    """P须异于A、B；角弧取较小夹角，与圆周角读数一致。"""
+    side_a, side_b = Line(p_pos, a_pos), Line(p_pos, b_pos)
+    if abs(inscribed_deg(a_pos, b_pos, p_pos) - 90) < 1e-6:
+        return RightAngle(side_a, side_b, length=0.28,
+                          color=GOLD, stroke_width=3)
+    clockwise = np.cross(a_pos - p_pos, b_pos - p_pos)[2] < 0
+    return Angle(side_a, side_b, radius=0.5, color=GOLD,
+                 other_angle=clockwise)
+
+
 class CircleTheorems(Scene):
     """垂径定理与圆周角定理：弦会滑，角会转，不变量钉在屏幕上。"""
 
@@ -47,7 +58,7 @@ class CircleTheorems(Scene):
                          .move_to(NOTE_POS))
 
     def pinned(self, getter, anchor, color=GOLD, fmt="{:.2f}", size=30):
-        """钉屏数值行：数字钉右缘，become 原地刷新。"""
+        """数值行：数字左缘固定，与标签右缘分开，become刷新。"""
         num = Text(fmt.format(getter()), font=FONT, font_size=size,
                    color=color)
         num.move_to(anchor, aligned_edge=LEFT)
@@ -202,23 +213,14 @@ class CircleTheorems(Scene):
             Line(on_circle(p_ang.get_value()),
                  on_circle(b_ang.get_value()), color=GOLD,
                  stroke_width=3)))
-        arc_p = always_redraw(lambda: RightAngle(
-            Line(on_circle(p_ang.get_value()),
-                 on_circle(a_ang.get_value())),
-            Line(on_circle(p_ang.get_value()),
-                 on_circle(b_ang.get_value())),
-            length=0.28, color=GOLD, stroke_width=3)
-            if abs(inscr_deg() - 90) < 0.3 else Angle(
-            Line(on_circle(p_ang.get_value()),
-                 on_circle(a_ang.get_value())),
-            Line(on_circle(p_ang.get_value()),
-                 on_circle(b_ang.get_value())),
-            radius=0.5, color=GOLD))
+        arc_p = always_redraw(lambda: inscribed_mark(
+            on_circle(a_ang.get_value()), on_circle(b_ang.get_value()),
+            on_circle(p_ang.get_value())))
         num_c = self.pinned(central_deg, np.array([4.55, 2.3, 0]),
                             TEAL, "{:.0f}°")
         num_i = self.pinned(inscr_deg, np.array([4.55, 1.7, 0]),
                             GOLD, "{:.1f}°")
-        lab_c = Text("圆心角 =", font=FONT, font_size=24, color=C_TEXT)
+        lab_c = Text("较小圆心角 =", font=FONT, font_size=24, color=C_TEXT)
         lab_c.move_to(np.array([4.25, 2.3, 0]), aligned_edge=RIGHT)
         lab_i = Text("圆周角 =", font=FONT, font_size=24, color=C_TEXT)
         lab_i.move_to(np.array([4.25, 1.7, 0]), aligned_edge=RIGHT)

@@ -89,7 +89,7 @@ class AnalyticProof(Scene):
             r"=\left(\tfrac{b+p}{2},\tfrac{q}{2}\right)",
             font_size=30)
         s4.move_to(np.array([steps_x, 0.2, 0]))
-        s5 = Text("两式一字不差：中点重合，互相平分，证毕",
+        s5 = Text("中点相同，对角线互相平分",
                   font=FONT, font_size=23, weight=BOLD, color=GOLD)
         s5.move_to(np.array([steps_x, -0.6, 0]))
 
@@ -123,10 +123,10 @@ class AnalyticProof(Scene):
         self.wait(1.5)
 
         # 推歪试验：恒等式级别的相等，不认 p 的具体值
-        self.set_note("把 D 往右推：平行四边形歪了，中点咬死不松口")
+        self.set_note("改变 p，观察两条对角线的中点是否重合")
         self.play(p.animate.set_value(2.6), run_time=3,
                   rate_func=linear)
-        self.set_note("坐标化的底气：算出来的相等，是恒等式级别的相等")
+        self.set_note("换一组 p，两个中点的坐标表达式仍相同")
         self.play(p.animate.set_value(0.6), run_time=3,
                   rate_func=linear)
         self.wait(2)

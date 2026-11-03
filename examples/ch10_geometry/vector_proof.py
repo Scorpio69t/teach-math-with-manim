@@ -17,7 +17,7 @@ class VectorProof(Scene):
                          .move_to(NOTE_POS))
 
     def pinned(self, getter, anchor, color=GOLD, fmt="{:.2f}", size=30):
-        """钉屏数值行：数字钉右缘，become 原地刷新。"""
+        """数值行：数字左缘固定，与标签右缘分开，become刷新。"""
         num = Text(fmt.format(getter()), font=FONT, font_size=size,
                    color=color)
         num.move_to(anchor, aligned_edge=LEFT)
@@ -119,7 +119,7 @@ class VectorProof(Scene):
         self.set_note("PA = −a − p，PB = a − p：数量积摆出来")
         self.play(Write(s2), run_time=1.4)
         self.wait(0.8)
-        self.set_note("展开：交叉项 −a·p + p·a 自动抵消")
+        self.set_note("展开：交叉项 a·p − p·a 抵消")
         self.play(Write(s3), run_time=1.4)
         self.wait(0.8)
         self.set_note("P 在圆上：|p| = r，于是 r² − r² = 0")
@@ -130,7 +130,9 @@ class VectorProof(Scene):
         # 数值复核：P 跑起来，两个读数钉死
         def dot_now():
             u, v = pt_a - pt_p(), pt_b - pt_p()
-            return float(np.dot(u, v))
+            value = float(np.dot(u, v))
+            # 只归零微小浮点残差，避免面板出现 -0.00
+            return 0.0 if abs(value) < 1e-10 else value
 
         def angle_now():
             u, v = pt_a - pt_p(), pt_b - pt_p()
@@ -151,10 +153,10 @@ class VectorProof(Scene):
         lab_ang.move_to(np.array([4.25, -2.2, 0]), aligned_edge=RIGHT)
         self.add(num_dot, num_ang, lab_dot, lab_ang)
 
-        self.set_note("P 在圆上随便跑：两个读数钉死在 0.00 与 90.0°")
+        self.set_note("P 在圆上移动，始终避开直径的两个端点")
         self.play(p_ang.animate.set_value(150), run_time=3.5,
                   rate_func=linear)
-        self.play(p_ang.animate.set_value(255), run_time=3.5,
+        self.play(p_ang.animate.set_value(30), run_time=3.5,
                   rate_func=linear)
-        self.set_note("同一个定理：几何语言、坐标语言、向量语言，一次看齐")
+        self.set_note("同一圆几何结论，也可用数量积证明")
         self.wait(2.5)

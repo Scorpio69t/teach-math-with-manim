@@ -34,7 +34,7 @@ def P(x, y):
 
 
 class PythagorasProof(Scene):
-    """勾股定理割补法无字证明：四个三角形，两种摆法，面积自己说话。"""
+    """比较四个全等直角三角形的两种拼法与面积账。"""
 
     def set_note(self, msg):
         """注释条铁律：真实首句初始化 + 固定锚点 + become 换词。"""
@@ -51,7 +51,7 @@ class PythagorasProof(Scene):
         return group
 
     def construct(self):
-        title = Text("勾股定理：无字证明", font=FONT, font_size=32,
+        title = Text("勾股定理：两种拼法", font=FONT, font_size=32,
                      weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = Text("一个 3-4-5 直角三角形：面积 = 3×4÷2 = 6",
@@ -74,8 +74,8 @@ class PythagorasProof(Scene):
                   run_time=0.8)
         self.wait(1.2)
 
-        # 第二幕：复制四份，围成边长 (a+b) 的大正方形
-        self.set_note("复制 4 份，围成边长 (a+b) 的大正方形")
+        # 第二幕：保留原三角形，再加入三个全等三角形
+        self.set_note("共 4 个全等三角形，拼入边长 (a+b) 的大正方形")
         big = Polygon(P(0, 0), P(L, 0), P(L, L), P(0, L),
                       color=GREY_B, stroke_width=3)
         tri_b = Polygon(P(7, 0), P(7, 3), P(3, 0),
@@ -116,7 +116,7 @@ class PythagorasProof(Scene):
         self.wait(1.5)
 
         # 第三幕：同样四个三角形，换一种摆法
-        self.set_note("同样 4 个三角形，换一种摆法——面积没动过")
+        self.set_note("比较相同四个三角形的两种摆法")
         tgt_b = Polygon(P(7, 7), P(3, 7), P(7, 4),
                         color=TEAL, stroke_width=3,
                         fill_color=TEAL, fill_opacity=0.35)
