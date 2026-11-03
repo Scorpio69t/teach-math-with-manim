@@ -24,7 +24,7 @@ def mix(parts, size=26, color=C_TEXT, math_scale=0.9, bold=False):
 
 
 class ParaboloidSlices(ThreeDScene):
-    """旋转抛物面：水平切片一路升高，圆从点长成整个碗。"""
+    """旋转抛物面：观察交线圆随水平切片升降而变化。"""
 
     def set_note(self, msg):
         """三维钉屏铁律：fixed_in_frame 文字不能走 Transform（会被
@@ -64,7 +64,7 @@ class ParaboloidSlices(ThreeDScene):
             self.set_height_panel(value)
 
     def construct(self):
-        title = Text("切片升起来，碗就长出来了", font=FONT,
+        title = Text("旋转抛物面的水平截面", font=FONT,
                      font_size=28, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = mix([("t", "旋转抛物面 "), ("m", "z = x^2 + y^2")])

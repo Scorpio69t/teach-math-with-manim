@@ -37,8 +37,8 @@ class SurfaceDemo(ThreeDScene):
         self.add_fixed_in_frame_mobjects(self.note)
 
     def construct(self):
-        title = mix([("t", "马鞍面："), ("m", "z = x^2 - y^2")],
-                    size=32, math_scale=1.0)
+        title = mix([("t", "马鞍面："), ("m", r"z=(x^2-y^2)/2.5")],
+                    size=32, math_scale=0.8)
         title.to_corner(UL, buff=0.5)
         self.note = Text("曲面是一张参数网格", font=FONT,
                          font_size=26, color=C_TEXT)
@@ -65,8 +65,8 @@ class SurfaceDemo(ThreeDScene):
         self.play(Create(saddle), run_time=2)
         self.wait(1)
 
-        # 环绕半周：从另一侧看"又凸又凹"——马鞍的灵魂
-        self.set_note("换个方向看：它同时是凸的和凹的")
+        # 环绕约 64°：观察两个方向上的不同弯曲
+        self.set_note("一条截线向上弯，另一条向下弯")
         self.begin_ambient_camera_rotation(rate=0.25)
         self.wait(4.5)
         self.stop_ambient_camera_rotation()
