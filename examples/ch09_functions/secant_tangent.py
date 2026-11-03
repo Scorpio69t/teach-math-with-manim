@@ -26,7 +26,7 @@ H_START = 1.0             # 保证初始动点 Q(2, 4) 位于坐标轴视窗内
 
 
 class SecantToTangent(Scene):
-    """割线逼近切线：极限不是代入，是无限靠近的过程。"""
+    """在 P(1,1) 处观察割线方向变化，再显示斜率为2的切线。"""
 
     def set_note(self, msg):
         if isinstance(msg, str):          # 纯中文注释条
@@ -35,7 +35,7 @@ class SecantToTangent(Scene):
             self.note.become(mix(msg).move_to(NOTE_POS))
 
     def construct(self):
-        title = Text("割线逼近切线：极限的眼睛", font=FONT,
+        title = Text("割线逼近切线：观察斜率趋近 2", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = mix([("m", "y = x^2"), ("t", "，盯住点 "),

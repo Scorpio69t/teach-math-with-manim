@@ -15,7 +15,7 @@ class GrowthRace(Scene):
                          .move_to(NOTE_POS))
 
     def construct(self):
-        title = Text("指数爆炸：起跑落后，结局碾压", font=FONT,
+        title = Text("增长比较：线性与指数", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = Text("线性 100x（青） vs 指数 2^x（金）", font=FONT,
@@ -32,7 +32,7 @@ class GrowthRace(Scene):
 
         f_lin = lambda x: 100 * x
         f_exp = lambda x: 2**x
-        x = ValueTracker(0.5)   # 遥控器：赛跑到第 x 秒
+        x = ValueTracker(0.5)   # 当前自变量，不是视频播放的秒数
 
         # 两条曲线只画到当前 x——跑道随赛程生长
         lin_curve = always_redraw(lambda: axes.plot(
@@ -71,5 +71,5 @@ class GrowthRace(Scene):
 
         self.set_note("再跑两步，结局没有悬念了")
         self.play(x.animate.set_value(12), run_time=2.5, rate_func=linear)
-        self.set_note("x=12：4096 对 1200——指数的胜利才刚开始")
+        self.set_note("x=12：线性为 1200，指数为 4096")
         self.wait(1.5)

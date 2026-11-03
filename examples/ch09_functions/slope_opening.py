@@ -15,8 +15,8 @@ class SlopeAndOpening(Scene):
                          .move_to(NOTE_POS))
 
     def make_panel(self, attr, tracker):
-        """钉屏数值面板：正负号恒显（+.2f）保证宽度不变，
-        数字右缘钉角，负号出现时不会向左压住标签。"""
+        """数值面板：正负号恒显（+.2f），数字右缘固定。
+        标签在左侧留间距，格式化不保证比例字体下的宽度恒定。"""
         num = Text(f"{tracker.get_value():+.2f}", font=FONT,
                    font_size=36, color=GOLD)
         num.to_corner(UR, buff=0.6)

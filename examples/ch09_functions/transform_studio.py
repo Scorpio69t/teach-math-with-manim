@@ -77,7 +77,7 @@ class TransformStudio(Scene):
                           color=GREY_B, stroke_width=2)
         a, h, k = ValueTracker(1), ValueTracker(0), ValueTracker(0)
         live = always_redraw(lambda: self.make_live_curve(axes, a, h, k))
-        # 顶点：抛物线的"心脏"，坐标 (h, k) 实时可读
+        # a≠0 时顶点为 (h,k)；a=0 时退化为水平线，标记仍在 (h,k)
         vertex = always_redraw(lambda: Dot(
             axes.c2p(h.get_value(), k.get_value()), color=RED, radius=0.09))
         panel = always_redraw(lambda: Text(
