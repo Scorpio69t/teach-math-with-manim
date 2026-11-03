@@ -21,15 +21,17 @@ def pin_to_screen(camera, mob, place, buff=0.5):
     h0, fh0 = mob.height, frame.height   # 钉屏瞬间的尺寸基准
 
     def update(m):
-        m.set_height(h0 * frame.height / fh0)   # 框缩一半，HUD 世界尺寸跟缩一半
+        ratio = frame.height / fh0
+        m.set(height=h0 * ratio)   # 尺寸与边距都按取景框同比缩放
+        pad = buff * ratio
         cx, cy = frame.get_center()[0], frame.get_center()[1]
         if place == "UL":
-            m.move_to([cx - frame.width / 2 + buff + m.width / 2,
-                       cy + frame.height / 2 - buff - m.height / 2, 0])
+            m.move_to([cx - frame.width / 2 + pad + m.width / 2,
+                       cy + frame.height / 2 - pad - m.height / 2, 0])
         elif place == "BOTTOM":
-            m.move_to([cx, cy - frame.height / 2 + buff + m.height / 2, 0])
+            m.move_to([cx, cy - frame.height / 2 + pad + m.height / 2, 0])
 
-    mob.add_updater(update)
+    mob.add_updater(update, call_updater=True)
     return mob
 
 
@@ -39,7 +41,9 @@ class HudDemo(MovingCameraScene):
     def set_note(self, msg):
         """更新钉屏注释条：Transform 原地换内容，位置由 updater 接管。"""
         new = Text(msg, font=FONT, font_size=26, color=C_TEXT)
-        self.play(Transform(self.note, new, run_time=0.3))
+        new.match_height(self.note).move_to(self.note)
+        self.play(Transform(self.note, new, run_time=0.3,
+                            suspend_mobject_updating=False))
 
     def construct(self):
         frame = self.camera.frame
