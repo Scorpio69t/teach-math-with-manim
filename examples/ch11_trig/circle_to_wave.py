@@ -151,6 +151,7 @@ class CircleToWave(Scene):
                  (3 * PI / 2, "沉入谷底：sin θ = −1", 1.2),
                  (2 * PI - 0.001, "走完一整圈：波也画完一整条", 0.8)]
         for target, msg, hold in marks:
+            self.set_note("观察转角变化时，圆上高度与正弦值的对应")
             self.play(th.animate.set_value(target), run_time=2.6,
                       rate_func=linear)
             self.set_note(msg)
