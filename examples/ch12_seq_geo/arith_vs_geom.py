@@ -108,7 +108,7 @@ class ArithVsGeom(Scene):
         # ===== 等比：散点连成指数曲线 =====
         self.set_note("等比的点，全踩在一条指数曲线上")
         curve_r = ax_r.plot(lambda x: 2 ** (x - 1),
-                            x_range=[0.4, 6.6], color=TEAL,
+                            x_range=[1, N_TERMS], color=TEAL,
                             stroke_width=3)
         curve_r.set_stroke(opacity=0.85)
         dash_r = DashedVMobject(curve_r, num_dashes=60)
@@ -131,7 +131,7 @@ class ArithVsGeom(Scene):
         self.play(ReplacementTransform(box_l, box_r), run_time=1.0)
         self.wait(1.2)
         self.play(FadeOut(box_r), run_time=0.5)
-        self.set_note("数列是定义在正整数上的函数——散点背后都有一条曲线")
+        self.set_note("本例散点对应两种连续函数，数列仍只取正整数项")
         self.wait(2.4)
         self.set_note("棋盘上放麦粒：第 64 格的等比，是天文数字")
         self.wait(2.6)

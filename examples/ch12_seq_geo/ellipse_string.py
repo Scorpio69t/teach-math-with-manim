@@ -18,9 +18,11 @@ class EllipseString(Scene):
                          .move_to(NOTE_POS))
 
     def b_now(self):
-        """当前短半轴，退化值守卫：a < c 时钳到 0。"""
+        """a=c时短半轴为0；a<c没有轨迹，不用钳值伪造椭圆。"""
         a = self.trk_a.get_value()
-        return np.sqrt(max(a * a - C_F * C_F, 1e-6))
+        if a < C_F:
+            raise ValueError("距离之和小于焦距，不存在轨迹")
+        return np.sqrt(max(a * a - C_F * C_F, 0.0))
 
     def p_pos(self):
         t = self.trk_t.get_value()
@@ -78,11 +80,11 @@ class EllipseString(Scene):
 
         p_title = Text("绳子账本", font=FONT, font_size=24,
                        weight=BOLD, color=C_TEXT)
-        p_title.move_to([3.6, 2.9, 0], aligned_edge=LEFT)
-        row1 = self._pinned("|PF1| =", d1, np.array([3.2, 2.3, 0]))
-        row2 = self._pinned("|PF2| =", d2, np.array([3.2, 1.8, 0]))
+        p_title.move_to([5.0, 2.9, 0], aligned_edge=LEFT)
+        row1 = self._pinned("|PF1| =", d1, np.array([5.0, 2.3, 0]))
+        row2 = self._pinned("|PF2| =", d2, np.array([5.0, 1.8, 0]))
         row3 = self._pinned("两段之和 =", lambda: d1() + d2(),
-                            np.array([3.2, 1.3, 0]), color=GOLD)
+                            np.array([5.0, 1.3, 0]), color=GOLD)
         self.play(FadeIn(p_title), FadeIn(row1), FadeIn(row2),
                   FadeIn(row3), run_time=0.8)
         self.wait(1.0)
@@ -99,10 +101,14 @@ class EllipseString(Scene):
         self.wait(2.4)
 
         # 轨迹换成随 a 联动的轮廓线，才能看见"瘪下去"的过程
-        outline = always_redraw(lambda: Ellipse(
-            width=2 * self.trk_a.get_value(),
-            height=2 * max(self.b_now(), 0.02),
-            color=TEAL, stroke_width=4))
+        def current_outline():
+            if self.b_now() == 0:
+                return Line(f1, f2, color=TEAL, stroke_width=4)
+            return Ellipse(width=2 * self.trk_a.get_value(),
+                           height=2 * self.b_now(),
+                           color=TEAL, stroke_width=4)
+
+        outline = always_redraw(current_outline)
         self.remove(trace)
         self.add(outline)
 
@@ -126,7 +132,10 @@ class EllipseString(Scene):
         mark = Text("✗ 够不着", font=FONT, font_size=28, color=RED,
                     weight=BOLD)
         mark.move_to(UP * 1.2)
+        # 无解段用短绳示意，先移除等号情形的轮廓与距离账本
         self.play(FadeOut(seg1), FadeOut(seg2), FadeOut(pencil),
+                  FadeOut(outline), FadeOut(seg_degen),
+                  FadeOut(p_title), FadeOut(row1), FadeOut(row2), FadeOut(row3),
                   FadeIn(short1), FadeIn(short2), run_time=0.9)
         self.play(FadeIn(mark, scale=0.5), run_time=0.7)
         self.wait(2.4)

@@ -145,5 +145,5 @@ class SeriesFill(Scene):
         self.wait(2.0)
         self.set_note("1/2 + 1/4 + 1/8 + … = 1——无限项，有限和，这叫收敛")
         self.wait(2.6)
-        self.set_note("换成 1 + 1/2 + 1/3 + … 就填不满任何框：那叫发散")
+        self.set_note("调和级数的部分和无上界；项趋于零不保证收敛")
         self.wait(2.8)
