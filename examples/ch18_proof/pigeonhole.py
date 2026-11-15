@@ -136,7 +136,7 @@ class Pigeonhole(Scene):
         link = Line(sc(p0), sc(p1), color=RED, stroke_width=4)
         rr1 = Text("同格两点的距离：", font=FONT, font_size=24,
                    color=C_TEXT).move_to(R1_POS)
-        rr2 = MathTex(f"{dist:.2f} \\le \\sqrt{2} \\approx {np.sqrt(2):.2f}", color=RED).scale(0.9).move_to(R2_POS)
+        rr2 = MathTex(f"{dist:.2f} \\le \\sqrt{2} \\approx {np.sqrt(2):.2f}", color=RED).scale_to_fit_width(4.4).move_to(R2_POS)
         self.play(Create(link), run_time=0.7)
         self.play(FadeIn(rr1), FadeIn(rr2), run_time=0.7)
         self.set_note("同格必撞线：小格对角线才 √2，同格距离超不过它")
