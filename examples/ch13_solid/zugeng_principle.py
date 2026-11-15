@@ -39,7 +39,7 @@ class ZugengPrinciple(ThreeDScene):
         discs = VGroup()
         for i in range(N_DISCS):
             d = Cylinder(radius=R_DISC, height=H_DISC,
-                         resolution=(2, 16),
+                         resolution=(2, 16), checkerboard_colors=False,
                          fill_color=GOLD if i % 2 == 0 else TEAL,
                          fill_opacity=0.95, stroke_color=WHITE,
                          stroke_width=1)
@@ -94,7 +94,7 @@ class ZugengPrinciple(ThreeDScene):
         self.wait(1.2)
 
         # ===== 结案 =====
-        self.set_note("一千五百年前的积分思想：截面积定，体积就定")
+        self.set_note("等高且对应截面面积相等，体积相等")
         self.wait(2.4)
-        self.set_note("刘徽没能解决的球体积，祖暅用「幂势既同」拿下了")
+        self.set_note("先比较各高度的截面积，再计算体积")
         self.wait(2.6)

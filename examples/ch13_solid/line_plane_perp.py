@@ -94,7 +94,7 @@ class LinePlanePerp(ThreeDScene):
                          about_point=ORIGIN),
                   run_time=1.8)
         self.wait(1.2)
-        self.set_note("一条直线管不住它——判定定理要「两条相交直线」")
+        self.set_note("只垂直一条线还不够：需要两条相交直线")
         self.wait(2.6)
 
         # ===== 结案 =====

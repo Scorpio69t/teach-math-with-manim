@@ -50,8 +50,8 @@ class CubeNet(ThreeDScene):
                               lag_ratio=0.12), run_time=1.8)
         self.wait(1.0)
 
-        # 转一圈看看全貌
-        self.set_note("先转一圈：记住每个面的颜色和位置")
+        # 换一个观察方向
+        self.set_note("换个角度：记住每个面的颜色和位置")
         self.move_camera(theta=-60 * DEGREES + PI / 2, run_time=2.6)
         self.wait(0.8)
 
@@ -105,6 +105,6 @@ class CubeNet(ThreeDScene):
                          about_point=[0, h, -h]),
                   run_time=3.0)
         self.wait(1.0)
-        self.set_note("展开与折叠互为逆操作——面与面的邻居关系不变")
+        self.set_note("沿原铰链反向折回，恢复正方体")
         self.move_camera(theta=-60 * DEGREES - PI / 2, run_time=2.6)
         self.wait(2.0)
