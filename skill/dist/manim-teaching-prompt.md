@@ -28,7 +28,7 @@
 - 更新文字用 `t.become(Text(...))` 原地变形（三维钉屏文字例外，见 `rules/pitfalls.md` C6）；
 - 描边框显现用 `Create(box)` 或只动 `set_stroke`，`set_opacity` 会把填充一起拉满盖住内容；
 - `TracedPath` 首参传 callable（如 `tip.get_center`），传 mobject 会报 `'Dot' object is not callable`；
-- `NumberPlane`（0.21+）线型参数是 `background_line_style={...}`，没有 `axis_config` 参数。
+- `NumberPlane` 的背景网格线型用 `background_line_style={...}`；坐标轴样式可用继承自 `Axes` 的 `axis_config={...}`，两者用途不同。
 
 ## 深度参考（按需读取对应文件）
 
@@ -90,7 +90,7 @@
 
 - `NumberLine(x_range=[a, b, step], length=..., include_ticks=True)`；`line.n2p(x)` 数值转坐标
 - `Axes(x_range=..., y_range=..., x_length=..., y_length=..., tips=False)`；`axes.c2p(x, y)`、`axes.plot(f, x_range=[...])`
-- `NumberPlane(x_range=..., y_range=..., background_line_style={"stroke_color": GREY, "stroke_width": 1, "stroke_opacity": 0.25}, faded_line_ratio=0)` —— **0.21 起用 background_line_style，无 axis_config**
+- `NumberPlane(x_range=..., y_range=..., background_line_style={"stroke_color": GREY, "stroke_width": 1, "stroke_opacity": 0.25}, faded_line_ratio=0)` —— 背景网格使用 `background_line_style`，坐标轴样式仍可使用 `axis_config`。
 - `Dot(p, radius=0.07, color=...)`、`Line(a, b)`、`DashedLine(a, b)`、`Arrow(start, end, buff=0, max_tip_length_to_length_ratio=0.12)`
 - `CurvedArrow(a, b, angle=TAU/3, tip_length=0.18)` —— 弧形箭头/循环示意
 - `Polygon(p1, p2, ..., fill_opacity=0.5)`、`Square(side_length=...)`、`Rectangle(width=..., height=...)`

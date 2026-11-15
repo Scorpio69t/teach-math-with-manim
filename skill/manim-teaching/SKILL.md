@@ -42,7 +42,7 @@ description: 生成规范、可渲染、有教学设计的 Manim 社区版（Man
 - 更新文字用 `t.become(Text(...))` 原地变形（三维钉屏文字例外，见 `rules/pitfalls.md` C6）；
 - 描边框显现用 `Create(box)` 或只动 `set_stroke`，`set_opacity` 会把填充一起拉满盖住内容；
 - `TracedPath` 首参传 callable（如 `tip.get_center`），传 mobject 会报 `'Dot' object is not callable`；
-- `NumberPlane`（0.21+）线型参数是 `background_line_style={...}`，没有 `axis_config` 参数。
+- `NumberPlane` 的背景网格线型用 `background_line_style={...}`；坐标轴样式可用继承自 `Axes` 的 `axis_config={...}`，两者用途不同。
 
 ## 深度参考（按需读取对应文件）
 
