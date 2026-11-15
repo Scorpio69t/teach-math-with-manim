@@ -38,9 +38,9 @@ class PowerOfI(Scene):
         title = zh("i 到底是什么？", 32, bold=True)
         title.to_corner(UL, buff=0.5)
         self.note = mix([
-            ("t", "课本只有一句话："),
+            ("t", "复数的基本关系："),
             ("m", "i^2 = -1"),
-            ("t", "。背下来，然后做题"),
+            ("t", "，它在平面上怎样表示？"),
         ]).move_to(NOTE_POS)
         self.add(title, self.note)
         self.wait(1.8)
@@ -94,7 +94,7 @@ class PowerOfI(Scene):
             self.set_note(msg)
             self.wait(1.4)
 
-        # ===== 结案：i^2 = -1 是几何必然 =====
+        # ===== 结案：代数定义与旋转表示相一致 =====
         self.set_note([("t", "看第二次落点：转两个 90° = 转 180° = 乘以 −1")])
         self.play(Indicate(dots[1], color=ORANGE, scale_factor=1.8),
                   run_time=1.2)
@@ -102,7 +102,7 @@ class PowerOfI(Scene):
 
         verdict = mix([
             ("m", "i^2 = -1"),
-            ("t", "：不是规定，是几何必然"),
+            ("t", "：乘两次 i，转过半圈"),
         ], size=30, color=GOLD, math_scale=1.0)
         verdict.move_to([0, 2.6, 0])
         self.play(FadeIn(verdict, shift=UP * 0.3), run_time=0.9)

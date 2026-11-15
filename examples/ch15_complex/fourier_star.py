@@ -70,7 +70,7 @@ class FourierStar(Scene):
         title = Text("几个圆，能画一颗星？", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
-        self.note = mix([("t", "欧拉公式说："), ("m", "e^{i\\theta}"),
+        self.note = mix([("t", "欧拉公式说："), ("m", r"e^{i\theta}"),
                          ("t", " 是一支会旋转的箭头")])
         self.note.move_to(NOTE_POS)
         self.add(title, self.note)
@@ -120,7 +120,7 @@ class FourierStar(Scene):
         self.add(chain, tip, trace)
 
         # ===== 开转：一整圈 =====
-        self.set_note("大圈慢转，小圈疯转——末端开始画画")
+        self.set_note("各分量按各自频率旋转——末端开始画画")
         self.play(th.animate.set_value(2 * PI * 0.45),
                   run_time=TRACE_TIME * 0.45, rate_func=linear)
         self.set_note("棱角出来了：五个尖，一个不少")
