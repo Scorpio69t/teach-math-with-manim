@@ -121,6 +121,15 @@ class NumberLineOps(Scene):
         self.wait(2.6)
 
         # ===== 传递性：排队 =====
+        # 恢复初始数值，再演示 c > a > b；镜像后的 a、b 顺序相反。
+        self.play(a_dot.animate.move_to(line.n2p(A0)),
+                  b_dot.animate.move_to(line.n2p(B0)), run_time=0.6)
+        a_lab.become(Text(f"a = {A0}", font=FONT, font_size=24, color=GOLD)
+                     .move_to(line.n2p(A0) + UP * 0.45))
+        b_lab.become(Text(f"b = {B0}", font=FONT, font_size=24, color=GOLD)
+                     .move_to(line.n2p(B0) + UP * 0.45))
+        readout.become(Text(f"复位：{A0} > {B0}", font=FONT,
+                            font_size=24, color=C_TEXT).move_to(READ_POS))
         self.play(FadeOut(stmt), run_time=0.4)
         c_dot = Dot(line.n2p(C0), radius=0.09, color=TEAL)
         c_lab = Text(f"c = {C0}", font=FONT, font_size=24, color=TEAL)

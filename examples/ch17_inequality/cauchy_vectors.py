@@ -40,7 +40,7 @@ class CauchyVectors(Scene):
 
         # ===== 建系 =====
         axes = Axes(x_range=[-1, 4, 1], y_range=[-1, 3, 1],
-                    x_length=7.6, y_length=4.2,
+                    x_length=5.25, y_length=4.2,  # 横纵每个数据单位均为 1.05 屏幕单位
                     axis_config={"color": GREY_B, "stroke_width": 2},
                     tips=False)
         axes.move_to([-1.6, -0.2, 0])
