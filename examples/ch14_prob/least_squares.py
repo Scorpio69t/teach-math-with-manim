@@ -68,7 +68,7 @@ class LeastSquares(Scene):
         self.wait(1.6)
 
         # ===== Q 面板 =====
-        q_lab = Text("方块总面积 Q =", font=FONT, font_size=26,
+        q_lab = Text("残差平方和 Q =", font=FONT, font_size=26,
                      color=C_TEXT)
         q_lab.move_to([4.35, 3.0, 0], aligned_edge=RIGHT)
         q_anchor = np.array([4.6, 3.0, 0])
@@ -85,7 +85,7 @@ class LeastSquares(Scene):
         self.wait(1.2)
 
         # ===== 试来试去 =====
-        self.set_note("斜率调小试试——方块胖了，Q 变大")
+        self.set_note("调小斜率并改变截距——比较新的 Q")
         self.play(k.animate.set_value(0.25), b.animate.set_value(1.8),
                   run_time=2.2)
         self.wait(1.2)
@@ -93,7 +93,7 @@ class LeastSquares(Scene):
         self.play(k.animate.set_value(1.25), b.animate.set_value(-0.9),
                   run_time=2.2)
         self.wait(1.2)
-        self.set_note("总有一个角度让 Q 最小——那就是答案")
+        self.set_note("同时调整斜率与截距，让残差平方和最小")
         self.play(k.animate.set_value(k_star),
                   b.animate.set_value(b_star), run_time=2.6)
         self.wait(1.6)
@@ -107,7 +107,7 @@ class LeastSquares(Scene):
         halo.move_to(center.get_center())
         self.play(FadeIn(center, scale=0.5), Create(halo), run_time=0.9)
         self.wait(2.0)
-        self.set_note("x̄ ≈ 4.5，ȳ ≈ 3.2——代进直线方程，严丝合缝")
+        self.set_note("样本中心是 (4.5, 3.15)，代入拟合直线核对")
         self.wait(2.4)
 
         # ===== 结案 =====

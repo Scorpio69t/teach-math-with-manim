@@ -21,7 +21,7 @@ class GaltonBoard(Scene):
                          .move_to(NOTE_POS))
 
     def construct(self):
-        title = Text("高尔顿钉板：随机的尽头是钟形", font=FONT,
+        title = Text("高尔顿钉板：频数与二项分布", font=FONT,
                      font_size=32, weight=BOLD, color=C_TEXT)
         title.to_corner(UL, buff=0.5)
         self.note = Text("一颗小球掉下来，碰到钉子往左还是往右？",
@@ -132,7 +132,7 @@ class GaltonBoard(Scene):
         curve.set_points_smoothly(pts)
         self.play(Create(curve), run_time=2.0)
         self.wait(1.2)
-        self.set_note("层数继续增加，柱子就磨成这条曲线——正态分布")
+        self.set_note("六层时仅作定性比较；正态近似还需要条件")
         self.wait(2.4)
-        self.set_note("单个不可预测，整体无比稳定——这就是统计的世界观")
+        self.set_note("频数柱仍有波动；理论分布给出比较基准")
         self.wait(2.6)
