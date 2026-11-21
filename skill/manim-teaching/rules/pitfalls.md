@@ -81,6 +81,7 @@
 | D3 | 变量名 `c1`、`x2`、`arr` | 教学语义命名：`compare_color`、`sorted_bar` | 代码即教材，命名即讲解 |
 | D4 | 验证/预检脚本把临时渲染目录建到系统 temp（`tempfile.TemporaryDirectory()` 默认系统盘） | 临时目录建在工作区内：`tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".")`，用完即删 | 一次本机事故中，工作区在 E 盘、系统 temp 在 C 盘时，MiKTeX 的 dvisvgm 静默返回 −4，manim 层只报 DVI 转 SVG 失败；这是该环境的复现记录，不外推为所有 Windows 机器的规律（2026-09-02 render_check 自身翻车抓获） |
 | D5 | 用简单过滤删除所有以连字符开头的参数，再把剩余项全当作位置参数 | 显式识别 `-o`，连同其后一个值从位置参数中移除，再解析视频路径与秒数 | 输出目录会混进秒数列表并触发 `float(path)` 的 `ValueError`；第 7 章正式抽帧按文档调用 `extract_frames.py -o` 时复现（2026-09-05） |
+| D6 | 需要逐帧相同的两轮回放，直接以浮点秒差调用静态wait，并只核对相机目标 | 在没有持续更新任务的驻留段，以目标整数帧减去实际已写帧计算等待；为静态冻结的向下取整保留小于一帧的余量，核对每轮开始帧及实际中途画面 | ManimCE 0.21.0 Cairo的freeze_current_frame按int(duration/dt)写帧；06-03内部制作版的3秒驻留因浮点残差只写179帧，使第二轮平移提前1帧；按整数帧对齐并在静止段用(剩余帧+0.25)/fps冻结等待后，两轮实际起止帧一致。此做法不用于需持续运行updater的等待（2026-11-21） |
 
 ---
 
