@@ -1,6 +1,7 @@
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.2     # 注释条固定锚点（换内容时保持位置稳定）
 

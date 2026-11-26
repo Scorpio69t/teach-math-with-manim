@@ -10,9 +10,10 @@ a/b/c 三个参数在面板上各占一行；讲解哪个参数，对应行变�
 渲染：manim -pqh standard_frame.py StandardFrameScene
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 
 
 def visible_x_span(a, b, c, top=4.5):

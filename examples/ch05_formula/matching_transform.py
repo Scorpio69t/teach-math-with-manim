@@ -4,9 +4,10 @@
   manim -pqh matching_transform.py MoveTermTransform   # 图 5-7
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"   # macOS 改 "PingFang SC"，Linux 改 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 
 
 class MoveTermTransform(Scene):

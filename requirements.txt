@@ -1,0 +1,5 @@
+# 图书《Manim，让数学看得见》配套代码依赖（建议 Python 3.10+）
+# Skill 白名单与案例以 ManimCE 0.21 实测为准
+manim>=0.21.0,<0.22
+# skill/manim-teaching/scripts/extract_frames.py 抽帧依赖（manim 默认也会安装）
+av>=12.0.0

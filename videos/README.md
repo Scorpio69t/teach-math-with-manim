@@ -20,4 +20,4 @@
 
 | 文件 | 对应章节 | 场景类 | 说明 |
 |---|---|---|---|
-| ch15_BubbleSortScene.mp4 | 第 15 章 | BubbleSortScene | 冒泡排序完整教学动画（精修演示版） |
+| ch15_BubbleSortScene.mp4 | 番外示例（`bonus_sorting`） | BubbleSortScene | 冒泡排序完整教学动画（精修演示版） |

@@ -6,9 +6,15 @@ set -e
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/manim-teaching" && pwd)"
 
+install_to() {
+  local dst="$1/manim-teaching"
+  rm -rf "$dst"
+  mkdir -p "$dst"
+  (cd "$SRC" && tar cf - --exclude='__pycache__' --exclude='*.pyc' .) | tar xf - -C "$dst"
+}
+
 if [ -n "${1:-}" ]; then
-  mkdir -p "$1/manim-teaching"
-  (cd "$SRC" && tar cf - --exclude='__pycache__' .) | tar xf - -C "$1/manim-teaching"
+  install_to "$1"
   echo "已安装到 $1/manim-teaching"
   exit 0
 fi
@@ -32,8 +38,7 @@ installed=0
 for dir in "${CANDIDATES[@]}"; do
   # 只装进"该产品已存在"的目录（父目录存在说明装过这个 Agent）
   if [ -d "$(dirname "$dir")" ]; then
-    mkdir -p "$dir/manim-teaching"
-    (cd "$SRC" && tar cf - --exclude='__pycache__' .) | tar xf - -C "$dir/manim-teaching"
+    install_to "$dir"
     echo "✓ 已安装到 $dir/manim-teaching"
     installed=$((installed + 1))
   fi

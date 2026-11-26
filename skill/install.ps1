@@ -8,8 +8,13 @@ $Src = Join-Path $PSScriptRoot "manim-teaching"
 
 function Install-To($dir) {
     $dst = Join-Path $dir "manim-teaching"
+    if (Test-Path $dst) {
+        Remove-Item -Recurse -Force $dst
+    }
     New-Item -ItemType Directory -Force -Path $dst | Out-Null
-    Copy-Item -Recurse -Force -Exclude "__pycache__" (Join-Path $Src "*") $dst
+    Copy-Item -Recurse -Force (Join-Path $Src "*") $dst
+    Get-ChildItem -Path $dst -Directory -Recurse -Filter "__pycache__" | Remove-Item -Recurse -Force
+    Get-ChildItem -Path $dst -File -Recurse -Filter "*.pyc" | Remove-Item -Force
     Write-Host "[OK] 已安装到 $dst"
 }
 

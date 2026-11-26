@@ -1,8 +1,9 @@
 # 附录 B 案例三：行列式即面积——符号是方向在说话
 # 渲染：manim -pqh det_area.py DetAreaScene
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55
 READOUT_POS = [4.2, 2.2, 0]

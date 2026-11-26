@@ -3,9 +3,10 @@
 渲染：manim -pqh transform_story.py TransformStoryScene
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 
 
 class TransformStoryScene(Scene):

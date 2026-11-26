@@ -5,6 +5,7 @@
 本文件独立运行，不需要LaTeX、外部图片、配音文件或辅助Python模块。
 """
 
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -34,7 +35,9 @@ def triangle_corners(top):
     return result
 
 
-FONT = 'Microsoft YaHei'  # macOS可改为PingFang SC；Linux可改为Noto Sans CJK SC
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
+MATH_FONT = {"win32": "Cambria Math", "darwin": "STIX Two Math"}.get(sys.platform, "DejaVu Serif")
+SERIF_FONT = {"win32": "Times New Roman", "darwin": "Times New Roman"}.get(sys.platform, "DejaVu Serif")
 CORAL = ManimColor('#EE8177')
 ICE = ManimColor('#66C8E3')
 AMBER = ManimColor('#EFC375')
@@ -81,7 +84,7 @@ def geometry(data,color):
 
 def piece(data,index):
     geom = geometry(data,COLORS[index])
-    tag = Text(GLYPHS[index],font='Cambria Math',color=COLORS[index],font_size=31)
+    tag = Text(GLYPHS[index],font=MATH_FONT,color=COLORS[index],font_size=31)
     tag.move_to(label_anchor(data['points']))
     return SimpleNamespace(geom=geom,tag=tag,face=geom[1],arc=geom[5],cut=geom[4])
 
@@ -132,9 +135,9 @@ class OpeningScene(Scene):
         triangle=Polygon(A,B,C,fill_color='#152638',fill_opacity=.62,
                          stroke_color=OUTLINE,stroke_width=3.6)
         vertex_names=VGroup(
-            Text('A',font='Times New Roman',font_size=31,color=INK).move_to(A+DOWN*.40),
-            Text('B',font='Times New Roman',font_size=31,color=INK).move_to(B+DOWN*.40),
-            Text('C',font='Times New Roman',font_size=31,color=INK).move_to(C+UP*.43),
+            Text('A',font=SERIF_FONT,font_size=31,color=INK).move_to(A+DOWN*.40),
+            Text('B',font=SERIF_FONT,font_size=31,color=INK).move_to(B+DOWN*.40),
+            Text('C',font=SERIF_FONT,font_size=31,color=INK).move_to(C+UP*.43),
         )
         pieces=[piece(d,i) for i,d in enumerate(data)]
         for p in pieces:
@@ -155,7 +158,7 @@ class OpeningScene(Scene):
         self.caption(2)
         top_line=Line([-5.65,C[1],0],[5.65,C[1],0],color='#8094A8',stroke_width=2.4)
         marks=VGroup(parallel_marks(C[1]),parallel_marks(A[1]))
-        line_name=Text('ℓ ∥ AB',font='Cambria Math',font_size=27,color='#A7B8C8').move_to([4.55,2.01,0])
+        line_name=Text('ℓ ∥ AB',font=MATH_FONT,font_size=27,color='#A7B8C8').move_to([4.55,2.01,0])
         self.play(Create(top_line),run_time=1.35)
         self.play(FadeIn(marks),FadeIn(line_name),run_time=.55)
         self.play(Indicate(marks,color=INK,scale_factor=1.0),run_time=1.1)
@@ -203,7 +206,7 @@ class OpeningScene(Scene):
         self.play(Create(outer_left),Create(outer_right),FadeOut(invariant),run_time=1.4)
         self.play(Create(sweep),run_time=1.7)
         self.caption(8)
-        formula=VGroup(*[Text(s,font='Cambria Math',font_size=40,color=INK)
+        formula=VGroup(*[Text(s,font=MATH_FONT,font_size=40,color=INK)
                          for s in ['α','+','β','+','γ','= 180°']]).arrange(RIGHT,buff=.13)
         formula[0].set_color(CORAL)
         formula[2].set_color(ICE)

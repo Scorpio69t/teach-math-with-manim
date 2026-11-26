@@ -1,8 +1,9 @@
 # 附录 B 案例一：向量加法与数乘——平行四边形法则
 # 渲染：manim -pqh vector_add.py VectorAddScene
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
 READOUT_POS = [4.9, 2.8, 0]  # 读数面板固定锚点

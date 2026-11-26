@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check Python syntax and ManimGL leaks
+        run: |
+          python3 - <<'EOF'
+          import ast
+          from pathlib import Path
+
+          forbidden = ("manimlib", "ShowCreation", "TextMobject", "TexMobject")
+          errors = []
+          for root in ("examples", "skill"):
+              for p in sorted(Path(root).rglob("*.py")):
+                  text = p.read_text(encoding="utf-8")
+                  try:
+                      ast.parse(text, filename=str(p))
+                  except SyntaxError as exc:
+                      errors.append(f"SyntaxError in {p}: {exc}")
+                  for token in forbidden:
+                      if token in text:
+                          errors.append(f"Forbidden ManimGL API '{token}' in {p}")
+          if errors:
+              raise SystemExit("\n".join(errors))
+          print("All Python files passed syntax and ManimGL checks.")
+          EOF
+
+      - name: Check single-file prompt sync
+        run: python3 skill/build_dist.py --check
+
+      - name: Check shell script syntax
+        run: bash -n skill/install.sh
+
+      - name: Smoke test dsh plugin registration
+        run: |
+          node --input-type=module - <<'EOF'
+          import assert from 'node:assert/strict'
+          import { existsSync } from 'node:fs'
+          import { apply, name, inject } from './skill/dsh-plugin/index.js'
+
+          assert.equal(name, 'dsh-manim-teaching')
+          assert.deepEqual(inject, ['skills'])
+
+          let registered = null
+          apply({
+            skills: { register(entry) { registered = entry } },
+            logger: { info() {} },
+          })
+
+          assert.ok(registered, 'skill should be registered')
+          assert.equal(registered.name, 'manim-teaching')
+          assert.ok(registered.description.length > 0)
+          assert.ok(registered.content.length > 0)
+          assert.ok(existsSync(registered.resourceBase.path))
+          console.log('dsh plugin smoke test passed:', registered.name)
+          EOF
