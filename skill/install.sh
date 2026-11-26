@@ -8,8 +8,13 @@ SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/manim-teaching" && pwd)"
 
 install_to() {
   local dst="$1/manim-teaching"
-  rm -rf "$dst"
   mkdir -p "$dst"
+  local dst_real
+  dst_real="$(cd "$dst" && pwd)"
+  if [ "$dst_real" = "$SRC" ]; then
+    echo "目标目录与源目录相同，跳过：$dst_real" >&2
+    return 1
+  fi
   (cd "$SRC" && tar cf - --exclude='__pycache__' --exclude='*.pyc' .) | tar xf - -C "$dst"
 }
 
