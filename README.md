@@ -20,7 +20,7 @@ Manim 是 3Blue1Brown 使用的数学动画引擎。本书是国内首部系统�
 git clone https://github.com/Scorpio69t/teach-math-with-manim.git
 cd teach-math-with-manim
 
-# 2. 安装依赖（建议 Python 3.10+，锁定 ManimCE 0.21）
+# 2. 安装依赖（需要 Python 3.11+，锁定 ManimCE 0.21）
 pip install -r requirements.txt
 
 # 3. 渲染第一个案例（冒泡排序——番外示例，免 LaTeX，低画质快速预览）
