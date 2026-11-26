@@ -17,6 +17,8 @@ from pathlib import Path
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
     if len(sys.argv) < 3:
         print("用法：python render_check.py <file.py> <SceneName>")
         return 2
