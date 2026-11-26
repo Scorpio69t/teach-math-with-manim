@@ -16,31 +16,34 @@ Manim 是 3Blue1Brown 使用的数学动画引擎。本书是国内首部系统�
 ## 快速开始
 
 ```bash
-# 1. 安装 Manim 社区版（建议 Python 3.10+）
-pip install manim
-
-# 2. 克隆本仓库
+# 1. 克隆本仓库
 git clone https://github.com/Scorpio69t/teach-math-with-manim.git
 cd teach-math-with-manim
 
-# 3. 渲染第一个案例（冒泡排序——番外示例，低画质快速预览）
+# 2. 安装依赖（需要 Python 3.11+，锁定 ManimCE 0.21）
+pip install -r requirements.txt
+
+# 3. 渲染第一个案例（冒泡排序——番外示例，免 LaTeX，低画质快速预览）
 #    注：算法内容已不属本书正篇，将单独成书；此案例保留为入门练手与 Skill 演示用
-manim -pql examples/ch15_sorting/bubble_sort.py BubbleSortScene
+manim -pql examples/bonus_sorting/bubble_sort.py BubbleSortScene
 ```
 
 渲染参数速查：`-pql` 快速预览 / `-pqm` 中等画质 / `-pqh` 高清出片 / `-pqk` 4K。
+环境提示：全仓 65 个案例中 38 个免 LaTeX 即可渲染，其余 27 个含 `MathTex` 公式的案例需安装 TeX 发行版（TeX Live / MiKTeX / MacTeX），详见 [examples/README.md](examples/README.md)。
 
 ## 仓库结构
 
 ```
 teach-math-with-manim/
-├── examples/          # 书中各章案例源码（按章节组织，均可直接渲染）
+├── examples/          # 书中各章案例源码（65 个文件，按章节组织，均可直接渲染）
 │   ├── ch09_functions/
-│   ├── ch15_sorting/
+│   ├── bonus_sorting/
 │   └── ...
-├── skill/             # 自研 Manim 教学动画 AI Skill（含 dsh 插件与安装脚本，见下）
-├── templates/         # 可复用模板：SortScene 基类、教学场景骨架等
-├── tools/             # 辅助脚本：渲染检查、批量导出等
+├── skill/             # 自研 Manim 教学动画 AI Skill（含 6 个教学模板、校验脚本、dsh 插件与安装脚本）
+├── templates/         # 教学设计模板（微课分镜表等）
+├── tools/             # 辅助工具说明（渲染校验与抽帧脚本位于 skill/manim-teaching/scripts/）
+├── videos/            # 精选成片预览
+├── requirements.txt   # Python 依赖与 ManimCE 0.21 版本范围
 └── README.md
 ```
 
@@ -52,7 +55,7 @@ teach-math-with-manim/
 >
 > （番外示例：排序动画是检验颜色语义与节奏控制的最佳试金石，故保留为 Skill 演示案例。）
 
-Skill 内置版本锁定（ManimCE 0.21 白名单）、28+ 条避坑档案、教学风格规范（颜色语义 / 五件套版式 / 节奏纪律）、数学严谨性军规，以及五个经真实渲染验证的教学模板。
+Skill 内置版本锁定（ManimCE 0.21 白名单）、64 条避坑档案、教学风格规范（颜色语义 / 五件套版式 / 节奏纪律）、数学严谨性军规、交付前验收清单，以及六个经真实渲染验证的教学模板。
 
 三种安装方式（详见 [skill/README.md](skill/README.md)）：
 

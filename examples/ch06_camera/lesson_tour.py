@@ -4,9 +4,10 @@
 三角形内角和微课：一区对象、一区证明、一区结论，镜头巡游，HUD 钉屏。
 渲染：manim -pqh examples/ch06_camera/lesson_tour.py LessonTour
 """
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 
 TRI_CENTER = LEFT * 9          # 左区：三角形与三个角

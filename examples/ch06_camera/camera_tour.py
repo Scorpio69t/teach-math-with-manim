@@ -3,9 +3,10 @@
 
 渲染：manim -pqh examples/ch06_camera/camera_tour.py CameraTour
 """
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS: "PingFang SC" / Linux: "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 
 
 class CameraTour(MovingCameraScene):

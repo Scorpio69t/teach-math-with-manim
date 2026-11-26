@@ -17,6 +17,8 @@ from pathlib import Path
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
     if len(sys.argv) < 3:
         print("用法：python render_check.py <file.py> <SceneName>")
         return 2
@@ -28,9 +30,13 @@ def main():
     with tempfile.TemporaryDirectory(prefix=".manim_check_", dir=".") as media:
         cmd = [sys.executable, "-m", "manim", "-ql", "--disable_caching",
                "--media_dir", media, file, scene]
-        proc = subprocess.run(cmd, capture_output=True, text=True,
-                              encoding="utf-8", errors="replace",
-                              timeout=600)
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True,
+                                  encoding="utf-8", errors="replace",
+                                  timeout=600)
+        except subprocess.TimeoutExpired:
+            print("RENDER_FAILED: 渲染超时（超过 600 秒）")
+            return 1
         log = (proc.stdout or "") + "\n" + (proc.stderr or "")
 
     # manim 的报错走 stderr；渲染成功标志是 "Rendered" 或文件产物
@@ -40,7 +46,16 @@ def main():
         tail = "\n".join(log.strip().splitlines()[-25:])
         print("RENDER_FAILED\n---- 报错尾部 ----\n" + tail)
         return 1
+
+    warnings = [
+        line.strip() for line in log.splitlines()
+        if re.search(r"\bWARNING\b|warn_missing_font|missing font", line, re.I)
+    ]
     print("RENDER_OK")
+    if warnings:
+        print("---- 告警（请核对字体回退/缺失） ----")
+        for w in warnings:
+            print(w)
     return 0
 
 

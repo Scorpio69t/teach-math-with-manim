@@ -4,9 +4,10 @@
   manim -pqh quadratic_derivation.py QuadraticDerivation   # 图 5-9
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"   # macOS 改 "PingFang SC"，Linux 改 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 CAPTION_POS = DOWN * 3.2
 
 STEPS = [

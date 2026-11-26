@@ -3,9 +3,10 @@
 
 渲染：manim -pqh examples/ch06_camera/hud_demo.py HudDemo
 """
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 WORLD_SPACING = 10
 

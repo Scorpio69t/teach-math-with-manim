@@ -14,9 +14,10 @@
 渲染：manim -pqh derivation_chain.py DerivationChain
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 CAPTION_POS = DOWN * 3.2  # 注释条固定锚点
 
 # ===== 改写区：只动这两张表 =====

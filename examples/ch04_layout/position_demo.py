@@ -3,9 +3,10 @@
 渲染：manim -pqh position_demo.py PositioningDemo
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 
 
 class PositioningDemo(Scene):

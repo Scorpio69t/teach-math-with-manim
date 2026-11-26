@@ -3,9 +3,10 @@
 渲染：manim -pqh instant_velocity.py InstantVelocity
 """
 
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.5      # 注释条固定锚点（换词位置不动）
 R1_POS = [5.3, 2.5, 0]     # 读数面板第一行锚点

@@ -1,8 +1,9 @@
 # 附录 B 案例二：矩阵即变换——看基向量去哪里
 # 渲染：manim -pqh matrix_transform.py MatrixTransformScene
+import sys
 from manim import *
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55
 READOUT_POS = [5.0, 2.6, 0]

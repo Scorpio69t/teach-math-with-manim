@@ -3,11 +3,12 @@
 渲染：manim -pqh circle_regions.py CircleRegions
 """
 
+import sys
 from manim import *
 from math import comb
 import math
 
-FONT = "Microsoft YaHei"  # macOS 改为 "PingFang SC"，Linux 改为 "Noto Sans CJK SC"
+FONT = {"win32": "Microsoft YaHei", "darwin": "PingFang SC"}.get(sys.platform, "Noto Sans CJK SC")
 C_TEXT = "#EDEDED"
 NOTE_POS = DOWN * 3.55       # 注释条固定锚点
 R1_POS = [4.8, 2.3, 0]       # n 读数

@@ -8,21 +8,22 @@
 ## 这个 Skill 强在哪里
 
 - **版本锁定（rules/version-lock.md）**：只生成 ManimCE 0.21 的 API 白名单代码，附 GL 版禁用对照表，从源头杜绝 GL/CE 混用和幻觉 API；
-- **避坑档案（rules/pitfalls.md）**：28+ 条真实渲染事故记录（已废弃接口、参数顺序、字体缺字形、文字重叠等），每条含错误现象与修法；
+- **避坑档案（rules/pitfalls.md）**：64 条真实渲染事故记录（已废弃接口、参数顺序、字体缺字形、文字重叠等），每条含错误现象与修法；
 - **教学风格（rules/teaching-style.md）**：颜色语义系统（金=当前关注、红=变化与矛盾、绿=结论成立、青=假设链条）、五件套版式、节奏纪律、三平台字体方案；
 - **数学严谨（rules/math-accuracy.md）**：六条军规——公式真算、点位可复现、派生点公式化、读数同源、递推驻留、颜色绑角色；
-- **可运行模板（templates/）**：五个覆盖高频场景的教学场景骨架（函数图像、几何证明、数轴、网格计数、通用五段式），全部经过真实渲染验证；
-- **验证脚本（scripts/）**：`render_check.py` 跨平台一键验证脚本可渲染，`extract_frames.py` 抽帧自查画面。
+- **交付验收（rules/qa-checklist.md）**：渲染验证、抽帧目检与教学审查三道关卡，逐条核对后再交付；
+- **可运行模板（templates/）**：六个覆盖高频场景的教学场景骨架（教学场景五件套、函数图像、推导链、几何证明、数轴、网格计数），全部经过真实渲染验证；
+- **验证脚本（scripts/）**：`api_probe.py` 动笔前探测真实 API 签名，`render_check.py` 跨平台一键验证可渲染并检查字体告警，`extract_frames.py` 抽帧自查画面。
 
 ## 目录结构
 
 ```
 skill/
 ├── manim-teaching/        # Skill 本体（安装的就是这个目录）
-│   ├── SKILL.md           # 入口：触发词、三条铁律、五步工作流、版本速查
-│   ├── rules/             # 四条规则库：版本锁定 / 避坑档案 / 教学风格 / 数学严谨
-│   ├── templates/         # 五个可渲染教学模板
-│   └── scripts/           # render_check.py / extract_frames.py
+│   ├── SKILL.md           # 入口：触发词、三条铁律、六步工作流、版本速查
+│   ├── rules/             # 五份规则库：版本锁定 / 避坑档案 / 教学风格 / 数学严谨 / 交付验收
+│   ├── templates/         # 六个可渲染教学模板
+│   └── scripts/           # api_probe.py / render_check.py / extract_frames.py
 ├── dsh-plugin/            # DeepSeek Harness 插件入口（index.js）
 ├── install.sh             # Unix 一键安装脚本（自动探测 10 种 Agent 目录）
 ├── install.ps1            # Windows 一键安装脚本
@@ -64,7 +65,7 @@ bash skill/install.sh ~/.myagent/skills
 
 ### ③ 单文件粘贴——任何纯对话工具
 
-`dist/manim-teaching-prompt.md` 是把 SKILL.md 正文与四份规则库合并后的单文件版本，直接粘贴到 ChatGPT、DeepSeek 网页版、Kimi 等任何对话窗口的系统提示词或首条消息里即可使用（模板与脚本请从本仓库单独下载）。
+`dist/manim-teaching-prompt.md` 是把 SKILL.md 正文与五份规则库合并后的单文件版本，直接粘贴到 ChatGPT、DeepSeek 网页版、Kimi 等任何对话窗口的系统提示词或首条消息里即可使用（模板与脚本请从本仓库单独下载）。
 
 该文件由 `build_dist.py` 生成，修改规则库后重跑一次即可同步。
 
